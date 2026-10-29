@@ -1,4 +1,5 @@
-// Every INTERVAL minutes, clicks Allow on every pending approval in open muse.ai tabs.
+// Every INTERVAL minutes, allows every pending approval in open muse.ai tabs
+// ("always allow for this website" when the card offers it).
 
 const INTERVAL_MIN = 2;
 const CLICK_DELAY_MS = 2000;
@@ -60,7 +61,7 @@ async function clickAllowButtons(delayMs, maxClicks) {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const text = (el) => (el.innerText || el.textContent || "").trim();
   // Site-access cards say "Allow"; upload cards in the web app say "Allow once"
-  // (next to a dropdown with broader options, which is never touched).
+  // next to a dropdown whose "always allow for this website" option is preferred.
   const allowButtons = (root) =>
     [...root.querySelectorAll("button, [role=button]")].filter(
       (b) => /^Allow( once)?$/.test(text(b)) && !b.disabled && b.getAttribute("aria-disabled") !== "true");
@@ -94,13 +95,41 @@ async function clickAllowButtons(delayMs, maxClicks) {
     return null;
   };
 
+  // Opens the dropdown next to the button and picks the "always" option.
+  // Returns the option's text, or null (menu closed again) if there is none.
+  const visible = (el) => el.offsetParent !== null || el.getClientRects().length > 0;
+  const allowAlways = async (btn) => {
+    let toggle = null;
+    for (let el = btn.parentElement, up = 0; el && up < 4 && !toggle; el = el.parentElement, up++) {
+      toggle = el.querySelector('[data-pel-click="chat_inline_approval_allow_options_menu_open"]');
+    }
+    if (!toggle) return null;
+    const before = new Set(document.querySelectorAll("*"));  // menu items are new elements
+    toggle.click();
+    await sleep(600);
+    const options = [...document.querySelectorAll('[role^=menuitem], [role=option], button, li, a, div, span')]
+      .filter((el) => !before.has(el) && visible(el))
+      .filter((el) => { const s = text(el); return s.length < 80 && /always|this (web)?site/i.test(s) && !s.includes("\n"); });
+    // Innermost match is the clickable item, not its wrapper.
+    const option = options.find((el) => !options.some((o) => o !== el && el.contains(o)));
+    if (!option) {
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      toggle.click();  // some menus only close on a second toggle click
+      await sleep(300);
+      return null;
+    }
+    option.click();
+    return text(option);
+  };
+
   const pressed = [];
   let last = null;
   while (pressed.length < maxClicks) {
     const next = findNext();
     if (!next || next.btn === last) break;  // nothing left, or the click didn't take
-    next.btn.click();
-    pressed.push(next.title);
+    const how = await allowAlways(next.btn);
+    if (!how) next.btn.click();
+    pressed.push(`${next.title} [${how || text(next.btn)}]`);
     last = next.btn;
     await sleep(delayMs);
   }

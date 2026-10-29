@@ -8,7 +8,7 @@ It does the same job as the Mac app in [`../muse-auto-allow-mac/`](../muse-auto-
 
 - Every **2 minutes** it looks for open `https://muse.ai` tabs and clicks Allow on each pending card, **2 seconds** apart, until the list is empty (max 30 per pass).
 - It only clicks buttons inside the **"Needs review"** section, and only on cards that show an "Allow … to …" prompt. Other "Allow" buttons on the page are ignored.
-- Upload cards in the web app say **"Allow once"**; site-access cards say **"Allow"**. It clicks either one. It never opens the dropdown next to "Allow once", so it never picks a broader option.
+- Upload cards in the web app say **"Allow once"**; site-access cards say **"Allow"**. When a card has a dropdown next to "Allow once", it opens the dropdown and picks **"always allow for this website"**, so the same site doesn't ask again. If there's no dropdown or no such option, it just clicks "Allow once" / "Allow". The log shows which one it used, e.g. `Allow pressed: Allow Luna to upload … [Always allow for this website]`.
 - **It clicks Allow on every prompt, including sensitive-site access.** See "Customize" to limit it to uploads.
 
 ## Install (once)
@@ -81,7 +81,7 @@ Edit `background.js`, then reload the extension:
 
 - 每 **2 分钟**找一次打开着的 `https://muse.ai` 标签页，对每个待审批卡片点 Allow，每次间隔 **2 秒**，直到列表清空（每轮最多 30 个）。
 - 只点 **"Needs review"** 区域里、而且卡片上有 "Allow … to …" 提示的按钮。页面上别的 "Allow" 按钮不会碰。
-- 网页版里上传请求的按钮写的是 **"Allow once"**，访问网站的请求写的是 **"Allow"**，两种都会点。它从不打开 "Allow once" 旁边的下拉菜单，所以不会选到范围更大的选项。
+- 网页版里上传请求的按钮写的是 **"Allow once"**，访问网站的请求写的是 **"Allow"**，如果 "Allow once" 旁边有下拉菜单，它会打开下拉菜单，选 **"always allow for this website"（这个网站永远允许）**，同一个网站以后就不会再问。没有下拉菜单或没有这个选项时，就直接点 "Allow once" / "Allow"。日志里会写用的是哪一个，比如 `Allow pressed: Allow Luna to upload … [Always allow for this website]`。
 - **它会对所有请求点 Allow，包括访问敏感网站的请求。** 只想批准上传的话，见下面"自定义"。
 
 ## 安装（只需一次）
