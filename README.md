@@ -1,200 +1,201 @@
-**English** | [中文](README.zh-CN.md)
+**中文** | [English](README.en.md)
 
-# Muse auto job apply
+# Muse 自动投简历
 
-A hands-off job-application pipeline that runs on a computer you leave on:
-**Muse** applies to jobs, **Claude** clicks the account-verification links, and a small **Mac app** or **Chrome extension** (Windows & Mac) clicks Allow on Muse's upload prompts.
+一套放在一台常开电脑上、基本不用管的自动求职流水线：
+**Muse** 负责投简历，**Claude** 负责点账号验证链接，一个小 **Mac 应用**或 **Chrome 扩展**（Windows 和 Mac 都能用）负责在 Muse 弹出上传请求时点 Allow。
 
-## Contents
-1. [What's in this repo](#1-whats-in-this-repo)
-2. [How the pieces fit](#2-how-the-pieces-fit)
-3. [What you need](#3-what-you-need)
-4. [Setup, in order](#4-setup-in-order)
-5. [Check it's working](#5-check-its-working)
-6. [Tuning](#6-tuning)
-7. [Troubleshooting](#7-troubleshooting)
-8. [Stop everything](#8-stop-everything)
+## 目录
+1. [仓库里有什么](#1-仓库里有什么)
+2. [各部分怎么配合](#2-各部分怎么配合)
+3. [需要准备什么](#3-需要准备什么)
+4. [按顺序设置](#4-按顺序设置)
+5. [检查是否在正常运行](#5-检查是否在正常运行)
+6. [调参](#6-调参)
+7. [常见问题](#7-常见问题)
+8. [全部停止](#8-全部停止)
 
 ---
 
-## 1. What's in this repo
+## 1. 仓库里有什么
 
-| File / folder | Runs in | What it does |
+| 文件 / 文件夹 | 在哪里运行 | 作用 |
 |---|---|---|
-| [muse-prompt.md](muse-prompt.md) | **Muse** | The assistant's operating manual: sources fresh jobs, applies on company sites, reads codes from your inbox, tracks everything in one log + spreadsheet, and reports. |
-| [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude** (hourly scheduled task) | Finds "verify your email / activate your account" emails from job sites in your application Gmail, opens each link once, and labels the email so it's never opened twice. |
-| [muse-auto-allow/](muse-auto-allow/) | **Your Mac** | Ready-to-build background app that clicks **Allow** on Muse's approval prompts every 2 minutes. |
-| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | **Chrome** (Windows & Mac) | The same auto-Allow as a Chrome extension for the Muse web app (muse.ai). Load the folder in Chrome; nothing to build. |
-| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **An AI coding assistant** (e.g. Claude Code) | Alternative to `muse-auto-allow/`: a prompt that has an AI build the same app for you from scratch. |
+| [muse-auto-allow-mac/](muse-auto-allow-mac/) | **Mac** | 编译、运行，它就会自动在 Muse 桌面应用里点 **Allow**。 |
+| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | **Chrome**（Windows 和 Mac） | 在 Chrome 里加载，它就会自动在 Muse 网页版（muse.ai）里点 **Allow**。 |
+| [muse-prompt.md](muse-prompt.md) | **Muse** | 助手的完整操作手册：找新职位、在公司官网投递、从邮箱读验证码、把所有记录写进一个日志和一个表格、定时汇报。 |
+| [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude**（每小时一次的定时任务） | 在求职专用 Gmail 里找招聘网站发来的 "verify your email / activate your account" 邮件，每个链接只打开一次，并给邮件打标签，保证不会重复打开。 |
 
-## 2. How the pieces fit
+## 2. 各部分怎么配合
 
 ```mermaid
 flowchart LR
-    subgraph MAC["Your computer · always on"]
+    subgraph MAC["你的电脑 · 一直开着"]
         direction TB
-        Allow["<b>Muse Auto Allow</b><br/>Mac app or Chrome extension"]
-        Muse["<b>Muse</b><br/>sources &amp; applies"]
-        Claude["<b>Claude</b><br/>hourly task"]
-        Allow -- "clicks Allow<br/>on uploads" --> Muse
+        Allow["<b>Muse Auto Allow</b><br/>Mac 应用或 Chrome 扩展"]
+        Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
+        Claude["<b>Claude</b><br/>每小时定时任务"]
+        Allow -- "点上传请求的<br/>Allow" --> Muse
     end
 
-    Jobs["<b>Job sites</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
-    Phone["<b>iPhone</b><br/>Shortcuts"]
-    Gmail[("<b>Job-application<br/>Gmail</b>")]
+    Jobs["<b>招聘网站</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
+    Phone["<b>iPhone</b><br/>快捷指令"]
+    Gmail[("<b>求职专用<br/>Gmail</b>")]
 
-    Muse -- "applies" --> Jobs
-    Muse -- "reads codes &amp;<br/>confirmations" --> Gmail
-    Claude -- "reads verify links" --> Gmail
-    Claude -- "opens each link once" --> Jobs
-    Jobs -- "emails" --> Gmail
-    Jobs -- "SMS codes" --> Phone
-    Phone -- "forwards SMS" --> Gmail
+    Muse -- "投递" --> Jobs
+    Muse -- "读验证码和<br/>投递确认" --> Gmail
+    Claude -- "读验证链接" --> Gmail
+    Claude -- "每个链接只打开一次" --> Jobs
+    Jobs -- "邮件" --> Gmail
+    Jobs -- "短信验证码" --> Phone
+    Phone -- "转发短信" --> Gmail
 ```
 
-- **Muse** does the applying. It pauses on every file upload, because Muse has no "always allow" for uploads.
-- **MuseAutoAllow** clicks Allow, so Muse never waits on you.
-- **Muse** reads email and SMS verification **codes** from the inbox and types them in.
-- Verification **links** can't be clicked by Muse (they arrive redacted), so the **Claude** task opens them every hour. This is the "auto-click option" in `muse-prompt.md` Part 6.7.
+- **Muse** 负责投递。每次上传文件都会停下来等批准，因为 Muse 没有"上传永远允许"的选项。
+- **Muse Auto Allow**（Mac 应用或 Chrome 扩展）自动点 Allow，Muse 就不会卡在等你。
+- **Muse** 从邮箱读邮件和短信的**验证码**，自己填进去。
+- **验证链接** Muse 点不了（它看到的链接是打码的），所以由 **Claude** 定时任务每小时去打开。这就是 `muse-prompt.md` 第 6.7 节说的 "auto-click option"。
 
-## 3. What you need
+## 3. 需要准备什么
 
-- A **computer that stays on**, plugged in: a **Mac** (Mac app or Chrome extension) or a **Windows PC** (Chrome extension).
-- **Muse**: the desktop app (for the Mac app) or the web app at https://muse.ai in Chrome (for the extension).
-- The **Claude** desktop app (for the scheduled task), plus a browser Claude can drive (Claude in Chrome or Claude's built-in browser).
-- One **dedicated Gmail** used only for job applications, not your personal inbox.
-- An **iPhone**, if sites text you codes (optional but recommended).
-- For the Mac app only: **Xcode Command Line Tools** (`xcode-select --install`).
+- 一台**一直开着**、插着电的电脑：**Mac**（Mac 应用或 Chrome 扩展都行）或 **Windows 电脑**（用 Chrome 扩展）。
+- **Muse**：Mac 应用配 Muse 桌面应用；Chrome 扩展配 Chrome 里的 Muse 网页版 https://muse.ai。
+- **Claude** 桌面应用（用来跑定时任务），以及 Claude 能操作的浏览器（Claude in Chrome 或 Claude 内置浏览器）。
+- 一个**只用来求职的 Gmail**，不要用私人邮箱。
+- 一部 **iPhone**，如果有网站用短信发验证码（可选，但推荐）。
+- 只有 Mac 应用需要：**Xcode Command Line Tools**（`xcode-select --install`）。
 
-## 4. Setup, in order
+## 4. 按顺序设置
 
-### Step 1: Sign in to the application Gmail in both Muse and Claude
+### 第 1 步：在 Muse 和 Claude 里都登录求职 Gmail
 
-Both apps need to read the **same** application inbox:
+两个应用要读的是**同一个**求职邮箱：
 
-| App | How | Why |
+| 应用 | 怎么做 | 为什么 |
 |---|---|---|
-| Muse | Ask Muse to connect your email. It gives you a connect link; finish it and check that Muse can read the inbox. Details: `muse-prompt.md` Part 6.4. | Reads confirmations, rejections, interview invites and verification codes. |
-| Claude | Settings → Connectors → Gmail, connect the application Gmail. Also sign in to that Gmail in the browser Claude will use. | The verifier searches the inbox and labels emails. |
+| Muse | 让 Muse 连接你的邮箱，它会给你一个连接链接；完成之后确认 Muse 能读到邮件。详见 `muse-prompt.md` 第 6.4 节。 | 读投递确认、拒信、面试邀请和验证码。 |
+| Claude | Settings → Connectors → Gmail，连接求职 Gmail。另外在 Claude 要用的浏览器里也登录这个 Gmail。 | 验证任务要搜邮件、打标签。 |
 
-Never paste passwords into a chat. Website logins go through Muse's secure entry form (`muse-prompt.md` Part 6.2).
+不要在聊天里发密码。网站登录信息通过 Muse 的安全输入表单保存（`muse-prompt.md` 第 6.2 节）。
 
-### Step 2: Set up Muse
+### 第 2 步：设置 Muse
 
-1. Open `muse-prompt.md` and replace every `[PLACEHOLDER]` (legend at the top of the file).
-2. Give it to Muse as its rules, and create the scheduled job-application tasks it describes (Part 1).
-3. Go through the checklist in Part 6.9: save your logins, connect the inbox, decide how uploads and links get handled.
+1. 打开 `muse-prompt.md`，把所有 `[PLACEHOLDER]` 换成你自己的信息（文件开头有对照表）。
+2. 把它交给 Muse 作为规则，并按第 1 部分创建投递用的定时任务。
+3. 按第 6.9 节的清单走一遍：保存各网站登录、连接邮箱、决定上传请求和验证链接怎么处理。
 
-### Step 3: Forward SMS codes to the Gmail (iPhone Shortcuts)
+### 第 3 步：把短信验证码转发到 Gmail（iPhone 快捷指令）
 
-Some sites text a code instead of emailing it. Muse can only read email, so forward those texts:
+有些网站用短信发验证码。Muse 只能读邮件，所以要把短信转成邮件：
 
-1. On the iPhone, open **Shortcuts** → **Automation** → **+** → **Message**.
-2. **Message Contains:** `code`. Choose **Run Immediately** (turn off "Notify When Run" if you like) → **Next**.
-3. Add the action **Send Email**:
-   - Recipient: your application Gmail.
-   - Subject: `SMS code`.
-   - Body: tap and pick **Shortcut Input → Content** (the message text).
-   - Expand the action and turn **Show Compose Sheet** off, so it sends without asking.
-4. Repeat for other words your sites use, e.g. `verification`, `passcode`. One automation per keyword.
-5. Test it: ask any site to text you a code and check that the email arrives.
+1. iPhone 打开**快捷指令（Shortcuts）** → **自动化（Automation）** → **+** → **信息（Message）**。
+2. **信息包含（Message Contains）**：`code`。选**立即运行（Run Immediately）**（"运行时通知"可以关掉）→ **下一步**。
+3. 添加操作**发送电子邮件（Send Email）**：
+   - 收件人：你的求职 Gmail。
+   - 主题：`SMS code`。
+   - 正文：点一下，选 **快捷指令输入 → 内容（Shortcut Input → Content）**，也就是短信内容。
+   - 展开这个操作，关掉**显示撰写表单（Show Compose Sheet）**，这样会直接发出去，不用你确认。
+4. 对网站常用的其他词再各建一个，比如 `verification`、`验证码`。一个关键词一个自动化。
+5. 测试：让任意一个网站给你发短信验证码，看邮件有没有到。
 
-The iPhone's Mail app must have an account set up to send from. Muse checks the inbox for both the site's own code email and this forwarded one (Part 6.6).
+iPhone 自带的"邮件"App 里要设置好一个能发信的账户。Muse 会同时在邮箱里找网站原本发的验证码邮件和这封转发邮件（第 6.6 节）。
 
-### Step 4: Set up the Claude email verifier (scheduled task)
+### 第 4 步：设置 Claude 邮件验证任务（定时任务）
 
-1. Open `claude-job-email-verifier.md` and replace `<YOUR_JOB_APP_GMAIL>` and `<YOUR_AGENT_NAME>` (e.g. "Muse").
-2. In the Claude desktop app, create a **scheduled task**:
-   - Schedule: **every hour**.
-   - Prompt: the block in section 2 of that file, pasted as-is.
-   - Turn on automatic approval and the option to run on this computer, so it can use your browser while you're away.
-   - Shortcut: tell Claude in a chat _"create a scheduled task that runs every hour with this prompt"_ and paste the block.
-3. Run it once by hand and accept the browser permission prompts for the job-site domains.
+1. 打开 `claude-job-email-verifier.md`，替换 `<YOUR_JOB_APP_GMAIL>` 和 `<YOUR_AGENT_NAME>`（比如填 "Muse"）。
+2. 在 Claude 桌面应用里创建一个**定时任务（scheduled task）**：
+   - 频率：**每小时**。
+   - Prompt：原样粘贴该文件第 2 节里的那段。
+   - 打开自动批准，以及"在这台电脑上运行"的选项，这样你不在的时候它也能用你的浏览器。
+   - 偷懒的办法：在 Claude 聊天里说 _"create a scheduled task that runs every hour with this prompt"_，然后粘贴那段 prompt。
+3. 先手动跑一次，在浏览器弹出权限请求时，允许它访问各个招聘网站的域名。
 
-### Step 5: Install the auto-approve tool
+### 第 5 步：安装自动批准工具
 
-Pick **one**. They do the same thing: click Allow on Muse's "Needs review" prompts every 2 minutes.
+**二选一**。两个做的事一样：每 2 分钟在 Muse 的 "Needs review" 里点 Allow。
 
-| | Option A: Mac app | Option B: Chrome extension |
+| | 方案 A：Mac 应用 | 方案 B：Chrome 扩展 |
 |---|---|---|
-| Works on | Mac | Windows and Mac |
-| Clicks in | Muse desktop app | Muse web app (muse.ai) in Chrome |
-| Setup | Build + Accessibility permission | Load the folder in Chrome |
+| 支持 | Mac | Windows 和 Mac |
+| 点哪里 | Muse 桌面应用 | Chrome 里的 Muse 网页版（muse.ai） |
+| 设置 | 编译 + 辅助功能权限 | 在 Chrome 里加载文件夹 |
 
-**Option A: Mac app.**
+**方案 A：Mac 应用。**
 
 ```
 git clone https://github.com/Dark417/muse-auto-job-apply
-cd muse-auto-job-apply/muse-auto-allow
+cd muse-auto-job-apply/muse-auto-allow-mac
 ./build.sh
 ```
 
-1. System Settings → Privacy & Security → **Accessibility** → **+** → choose `muse-auto-allow/MuseAutoAllow.app` → switch it **on**.
-2. Open Muse on the approvals page (shield tab in the right panel) and leave it there.
-3. Double-click **`muse-on.command`**. It starts in the background, so you can close the Terminal window. `muse-off.command` stops it.
+1. 系统设置 → 隐私与安全性 → **辅助功能（Accessibility）** → **+** → 选择 `muse-auto-allow-mac/MuseAutoAllow.app` → **打开开关**。
+2. 打开 Muse 桌面应用，停在审批页（见下面的说明）。
+3. 双击 **`muse-on.command`**。它会在后台运行，终端窗口可以直接关掉。双击 `muse-off.command` 可以停止。
 
-Full details: [muse-auto-allow/README.md](muse-auto-allow/README.md).
+完整说明见 [muse-auto-allow-mac/README.md](muse-auto-allow-mac/README.md)（英文）。
 
-**Option B: Chrome extension (Windows & Mac).**
+**方案 B：Chrome 扩展（Windows 和 Mac）。**
 
-1. Get the repo (`git clone` as above, or **Code → Download ZIP** on GitHub).
-2. Chrome → `chrome://extensions` → turn on **Developer mode** → **Load unpacked** → choose the `muse-auto-allow-chrome` folder.
-3. Open https://muse.ai, sign in, open the right panel on the approvals (shield) tab, and leave the tab open.
-4. Chrome → Settings → Performance → **Always keep these sites active** → add `muse.ai`, so Chrome doesn't put the tab to sleep.
+1. 下载仓库（像上面那样 `git clone`，或在 GitHub 上点 **Code → Download ZIP**）。
+2. Chrome → `chrome://extensions` → 打开**开发者模式** → **加载已解压的扩展程序** → 选择 `muse-auto-allow-chrome` 文件夹。
+3. 打开 https://muse.ai 并登录，停在审批页（见下面的说明），标签页一直开着。
+4. Chrome → 设置 → 性能 → **始终让这些网站保持活动状态** → 添加 `muse.ai`，免得 Chrome 让这个标签页休眠。
 
-Full details: [muse-auto-allow-chrome/README.md](muse-auto-allow-chrome/README.md).
+完整说明见 [muse-auto-allow-chrome/README.md](muse-auto-allow-chrome/README.md)（中英文）。
 
-**Option C: have an AI build the Mac app.** Open Claude Code (or a similar tool) in an empty folder and paste `mac-auto-approve-script-prompt.md`.
+> **必须停在这个页面，自动点击才会生效：** 右侧面板打开 → 选中 **Approvals（审批，盾牌图标）** 那个 tab，能看到 "Needs review" 列表。
+> - 面板关了、切到 Activity / Upcoming / Identity 这几个 tab，或者 Mac 应用那边 Muse 退出了、Chrome 那边 muse.ai 标签页关了，**都不会点**。
+> - 停在这个页面之后就可以不管了：Muse 窗口可以被别的窗口挡住，muse.ai 标签页也可以放在后台。
 
-> Both tools click Allow on **every** Muse prompt, including sensitive-site access. Each README shows how to limit it to uploads.
+> 两个工具都会对 Muse 的**所有**请求点 Allow，包括访问敏感网站的请求。如果只想自动批准上传，看各自的 README 怎么改。
 
-### Step 6: Keep the computer awake forever
+### 第 6 步：让电脑永远不睡
 
-**On Windows (Chrome extension):** Settings → System → Power → set sleep when plugged in to **Never**, and keep Chrome open. A locked screen is fine for the extension.
+**Windows（Chrome 扩展）：** 设置 → 系统 → 电源 → 插电时睡眠设为**从不**，并保持 Chrome 开着。锁屏不影响扩展。
 
-**On a Mac:** the Mac app can't click on a sleeping or locked Mac (the Chrome extension only needs it awake). In System Settings:
+**Mac：** Mac 应用在睡眠或锁屏时都点不了（Chrome 扩展只要求不睡眠）。在系统设置里：
 
-| Setting | Where | Value |
+| 设置 | 位置 | 值 |
 |---|---|---|
-| Don't sleep | Battery → Options (laptop) or Energy (desktop) | **Prevent automatic sleeping when the display is off**: on |
-| Don't lock | Lock Screen | **Require password after screen saver begins or display is turned off**: Never |
-| Screen saver | Lock Screen | **Start Screen Saver when inactive**: Never (optional) |
+| 不睡眠 | 电池 → 选项（笔记本）或 节能（台式机） | **显示器关闭时防止自动进入睡眠**：打开 |
+| 不锁屏 | 锁定屏幕 | **屏幕保护程序启动或显示器关闭后需要密码**：永不 |
+| 屏幕保护 | 锁定屏幕 | **不活跃时启动屏幕保护程序**：永不（可选） |
 
-- Keep it **plugged in** with the lid **open** (or closed with an external monitor and power).
-- The display can turn off or be dimmed; only the system has to stay awake.
-- This leaves your Mac unlocked, so only do it somewhere you trust.
-- After a reboot, double-click `muse-on.command` again (Mac app), or reopen Chrome and the muse.ai tab (extension).
+- 一直**插着电**，盖子**打开**（或者合盖但接着外接显示器和电源）。
+- 屏幕可以关掉或调暗，只要系统本身醒着就行。
+- 这样电脑就一直是解锁状态，只在你放心的地方这么做。
+- 重启之后，再双击一次 `muse-on.command`（Mac 应用），或者重新打开 Chrome 和 muse.ai 标签页（扩展）。
 
-## 5. Check it's working
+## 5. 检查是否在正常运行
 
-| Piece | How to check |
+| 部分 | 怎么检查 |
 |---|---|
-| MuseAutoAllow | `pgrep -fl MuseAutoAllow` shows one line. `tail muse-auto-allow/muse-autoallow.log` shows `Allow pressed (ok): …` after an upload prompt. |
-| Chrome extension | Click its icon: the log shows `Allow pressed: …` after an upload prompt. The badge shows how many it allowed in the last pass. |
-| Claude verifier | Its hourly runs say "No new verification emails." or list verified companies. Verified emails get the `ats-verified` label in Gmail. |
-| SMS forwarding | Texted codes show up in the application Gmail within a minute. |
-| Muse | Its reports show new applications; upload prompts don't pile up in the approvals list. |
+| Mac 应用 | `pgrep -fl MuseAutoAllow` 显示一行。出现上传请求后，`tail muse-auto-allow-mac/muse-autoallow.log` 里有 `Allow pressed (ok): …`。 |
+| Chrome 扩展 | 点扩展图标：出现上传请求后，日志里有 `Allow pressed: …`。图标上的数字是上一轮批准了几个。 |
+| Claude 验证任务 | 每小时的结果写着 "No new verification emails." 或者列出验证成功的公司。验证过的邮件在 Gmail 里带 `ats-verified` 标签。 |
+| 短信转发 | 短信验证码一分钟内出现在求职 Gmail 里。 |
+| Muse | 汇报里有新的投递；审批列表里的上传请求不会越积越多。 |
 
-## 6. Tuning
+## 6. 调参
 
-- **Sourcing window (`muse-prompt.md` Part 3.2):** the default is jobs posted in the last **12 hours**, falling back to **24 hours**. On a slow day, or once you've applied to everything fresh, Muse finds **nothing new and stops applying**. If your reports show zero new work, widen it (e.g. 24h primary, 72h fallback) and update the matching lines in Part 7.1 and Part 13.1.
-- **Auto-approve timing:** `interval` (default 2 min) at the top of `MuseAutoAllow.swift`. Rebuild and re-grant Accessibility after changing it.
-- **Verifier lookback:** if you run the Claude task less often than hourly, raise `newer_than:4h` in its prompt.
+- **找职位的时间窗口（`muse-prompt.md` 第 3.2 节）**：默认只找最近 **12 小时**发布的职位，找不到再放宽到 **24 小时**。如果那天新职位少，或者新职位都已经投过了，Muse 就**找不到新工作，停止投递**。如果汇报里一整天都没有新投递，就把窗口放宽（比如主窗口 24 小时，后备 72 小时），并同步修改第 7.1 节和第 13.1 节里对应的数字。
+- **自动批准的频率**：`MuseAutoAllow.swift` 开头的 `interval`（默认 2 分钟）。改完要重新编译，并重新授权辅助功能。
+- **验证任务回看多久**：如果 Claude 任务不是每小时跑，就把 prompt 里的 `newer_than:4h` 调大。
 
-## 7. Troubleshooting
+## 7. 常见问题
 
-| Symptom | Fix |
+| 现象 | 解决办法 |
 |---|---|
-| Log says `NOT TRUSTED` | Remove `MuseAutoAllow` from Accessibility, add it again, switch it on, then `muse-off.command` and `muse-on.command`. This is needed after every rebuild or folder move. |
-| Upload prompts pile up | Is the computer asleep (or locked, for the Mac app)? Is the app running (`pgrep`), or the extension switched on with a muse.ai tab open? Is Muse open on the approvals page? |
-| Muse says a code is missing | Check that SMS forwarding works and that Muse is reading the **application** inbox, not a personal one. |
-| Verification emails stay unlabeled | The page asked for a password or form ("needs user"), or the domain isn't on the allow-list. Finish it by hand, or add the domain. |
-| No new applications for a day | Sourcing window too narrow; see Tuning. |
+| 日志里写 `NOT TRUSTED` | 在辅助功能里删掉 `MuseAutoAllow`，重新添加并打开开关，然后双击 `muse-off.command` 再双击 `muse-on.command`。每次重新编译或移动文件夹之后都要做一次。 |
+| 上传请求越积越多 | 电脑是不是睡着了（Mac 应用还要求不锁屏）？应用还在运行吗（`pgrep`），或者扩展是否打开、muse.ai 标签页是否开着？Muse 是不是停在审批页（面板打开、Approvals tab）？ |
+| Muse 说找不到验证码 | 检查短信转发是否正常，以及 Muse 读的是**求职**邮箱，不是私人邮箱。 |
+| 验证邮件一直没被打标签 | 页面要求输密码或填表（"needs user"），或者域名不在白名单里。手动处理，或者把域名加进白名单。 |
+| 一整天没有新投递 | 找职位的时间窗口太窄，见"调参"。 |
 
-## 8. Stop everything
+## 8. 全部停止
 
-- **Mac app:** double-click `muse-off.command`, or run `pkill -f MuseAutoAllow.app`.
-- **Chrome extension:** switch it off in its popup, or remove it on `chrome://extensions`.
-- **Claude verifier:** pause or delete the scheduled task in Claude.
-- **Muse:** pause its scheduled tasks in the app.
-- **SMS forwarding:** turn off the automations in iPhone Shortcuts.
+- **Mac 应用**：双击 `muse-off.command`，或运行 `pkill -f MuseAutoAllow.app`。
+- **Chrome 扩展**：在扩展弹窗里关掉，或在 `chrome://extensions` 里移除。
+- **Claude 验证任务**：在 Claude 里暂停或删除这个定时任务。
+- **Muse**：在应用里暂停它的定时任务。
+- **短信转发**：在 iPhone 快捷指令里关掉那几个自动化。

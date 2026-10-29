@@ -8,10 +8,12 @@ A tiny background Mac app that clicks **Allow** on the Muse desktop app's approv
 
 ## Requirements
 - macOS with Xcode Command Line Tools: `xcode-select --install`
-- Muse installed. Leave it open on the approvals (shield) tab.
+- Muse desktop app installed and open on the approvals page (see below).
+
+> **Muse must stay on this page, or nothing gets clicked:** right panel open, **Approvals (shield icon)** tab selected, showing the "Needs review" list. If the panel is closed, another tab (Activity / Upcoming / Identity) is selected, or Muse is quit, the app finds nothing. The Muse window can sit behind other windows.
 
 ## Use it (once)
-1. Download this folder (`git clone https://github.com/Dark417/muse-auto-job-apply` or the zip) and open it in Terminal: `cd muse-auto-job-apply/muse-auto-allow`
+1. Download this folder (`git clone https://github.com/Dark417/muse-auto-job-apply` or the zip) and open it in Terminal: `cd muse-auto-job-apply/muse-auto-allow-mac`
 2. Build: `./build.sh` (creates `MuseAutoAllow.app` right here; it is built on your Mac, so nothing is downloaded or pre-compiled).
 3. **Grant permission, once:** System Settings → Privacy & Security → Accessibility → **+** → pick the `MuseAutoAllow.app` in this folder → switch it **on**.
 4. Double-click **`muse-on.command`**. It starts the app in the background and you can close the Terminal window. If it's already running, you get an alert instead of a second copy.

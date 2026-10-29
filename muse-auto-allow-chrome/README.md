@@ -4,7 +4,7 @@
 
 A Chrome extension that clicks **Allow** on Muse's "Needs review" approval prompts (e.g. file uploads) in the Muse web app, so scheduled Muse tasks never sit waiting for you.
 
-It does the same job as the Mac app in [`../muse-auto-allow/`](../muse-auto-allow/), but runs in Chrome, so it works on **Windows and Mac**. There's nothing to build or grant at the system level.
+It does the same job as the Mac app in [`../muse-auto-allow-mac/`](../muse-auto-allow-mac/), but runs in Chrome, so it works on **Windows and Mac**. There's nothing to build or grant at the system level.
 
 - Every **2 minutes** it looks for open `https://muse.ai` tabs and clicks Allow on each pending card, **2 seconds** apart, until the list is empty (max 30 per pass).
 - It only clicks buttons inside the **"Needs review"** section, and only on cards that show an "Allow … to …" prompt. Other "Allow" buttons on the page are ignored.
@@ -24,7 +24,9 @@ It also works in other Chromium browsers (Edge, Brave, Arc) through their extens
 ## Use it
 
 1. In Chrome, open **https://muse.ai** and sign in.
-2. Open the right-hand panel on the **approvals (shield) tab**, where "Needs review" is listed. Leave the tab open. It can be in the background, but don't close it.
+2. Open the right-hand panel on the **Approvals (shield) tab**, where "Needs review" is listed. Leave the tab open. It can be in the background, but don't close it.
+
+> **It only works while that tab stays on this page:** panel open, **Approvals** tab selected. If you close the panel or switch to Activity / Upcoming / Identity, nothing gets clicked, and the log says `sections 0`.
 3. That's it. The extension checks every 2 minutes. The toolbar badge shows how many prompts it allowed in the last pass.
 
 Click the extension icon to:
@@ -38,7 +40,7 @@ Click the extension icon to:
 - **Stop Chrome from putting the tab to sleep:** Settings → **Performance** → **Always keep these sites active** → **Add** → `muse.ai`.
 - **Keep the computer awake:**
   - **Windows:** Settings → System → **Power** (& battery) → set "When plugged in, put my device to sleep after" to **Never**. Locking the screen is fine; sleep is not.
-  - **Mac:** see Step 6 in the [main README](../README.md#step-6-keep-the-computer-awake-forever).
+  - **Mac:** see Step 6 in the [main README](../README.en.md#step-6-keep-the-computer-awake-forever).
 
 ## Update
 
@@ -75,7 +77,7 @@ Edit `background.js`, then reload the extension:
 
 一个 Chrome 扩展：在 Muse 网页版里自动点"Needs review"审批列表的 **Allow**（比如上传文件的请求），让 Muse 的定时任务不会卡住等你。
 
-和 [`../muse-auto-allow/`](../muse-auto-allow/) 里的 Mac 应用作用一样，但跑在 Chrome 里，所以 **Windows 和 Mac 都能用**，不用编译，也不用给系统权限。
+和 [`../muse-auto-allow-mac/`](../muse-auto-allow-mac/) 里的 Mac 应用作用一样，但跑在 Chrome 里，所以 **Windows 和 Mac 都能用**，不用编译，也不用给系统权限。
 
 - 每 **2 分钟**找一次打开着的 `https://muse.ai` 标签页，对每个待审批卡片点 Allow，每次间隔 **2 秒**，直到列表清空（每轮最多 30 个）。
 - 只点 **"Needs review"** 区域里、而且卡片上有 "Allow … to …" 提示的按钮。页面上别的 "Allow" 按钮不会碰。
@@ -95,7 +97,9 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也能用，从它们自己的
 ## 使用
 
 1. 在 Chrome 里打开 **https://muse.ai** 并登录。
-2. 打开右侧面板的**审批页（盾牌图标那个 tab）**，也就是显示 "Needs review" 的地方。这个标签页一直开着，可以放在后台，但不要关掉。
+2. 打开右侧面板的**审批页（Approvals，盾牌图标那个 tab）**，也就是显示 "Needs review" 的地方。这个标签页一直开着，可以放在后台，但不要关掉。
+
+> **这个标签页必须一直停在这个页面才有效：** 面板打开、选中 **Approvals** tab。如果关掉面板，或者切到 Activity / Upcoming / Identity，就不会点，日志里会写 `sections 0`。
 3. 就这样。扩展每 2 分钟检查一次，工具栏图标上的数字是上一轮批准了几个。
 
 点扩展图标可以：
@@ -109,7 +113,7 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也能用，从它们自己的
 - **别让 Chrome 让这个标签页休眠：** 设置 → **性能（Performance）** → **始终让这些网站保持活动状态（Always keep these sites active）** → **添加** → `muse.ai`。
 - **让电脑不睡眠：**
   - **Windows：** 设置 → 系统 → **电源**（和电池）→ "插入电源时，在此时间后使设备进入睡眠状态"设为**从不**。锁屏没关系，睡眠不行。
-  - **Mac：** 见[主 README](../README.zh-CN.md) 第 6 步。
+  - **Mac：** 见[主 README](../README.md) 第 6 步。
 
 ## 更新
 
