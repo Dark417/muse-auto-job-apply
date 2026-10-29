@@ -1,8 +1,110 @@
+**English** | [中文](README.zh-CN.md)
+
 # Muse auto job apply
 
-## Quick start: the auto-approve app
+A hands-off job-application pipeline that runs on a Mac you leave on:
+**Muse** applies to jobs, **Claude** clicks the account-verification links, and a small **Mac app** clicks Allow on Muse's upload prompts.
 
-[`muse-auto-allow/`](muse-auto-allow/) is a ready-to-build Mac app that clicks Allow on Muse's approval prompts for you.
+## Contents
+1. [What's in this repo](#1-whats-in-this-repo)
+2. [How the pieces fit](#2-how-the-pieces-fit)
+3. [What you need](#3-what-you-need)
+4. [Setup, in order](#4-setup-in-order)
+5. [Check it's working](#5-check-its-working)
+6. [Tuning](#6-tuning)
+7. [Troubleshooting](#7-troubleshooting)
+8. [Stop everything](#8-stop-everything)
+
+---
+
+## 1. What's in this repo
+
+| File / folder | Runs in | What it does |
+|---|---|---|
+| [muse-prompt.md](muse-prompt.md) | **Muse** | The assistant's operating manual: sources fresh jobs, applies on company sites, reads codes from your inbox, tracks everything in one log + spreadsheet, and reports. |
+| [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude** (hourly scheduled task) | Finds "verify your email / activate your account" emails from job sites in your application Gmail, opens each link once, and labels the email so it's never opened twice. |
+| [muse-auto-allow/](muse-auto-allow/) | **Your Mac** | Ready-to-build background app that clicks **Allow** on Muse's approval prompts every 2 minutes. |
+| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **An AI coding assistant** (e.g. Claude Code) | Alternative to the folder above: a prompt that has an AI build the same app for you from scratch. |
+
+## 2. How the pieces fit
+
+```
+                 ┌──────────── dedicated job-application Gmail ────────────┐
+                 │   confirmations · codes · SMS codes · verification links │
+                 └──────▲──────────────────▲─────────────────────▲──────────┘
+                        │ reads codes      │ opens links         │ forwards SMS codes
+                  ┌─────┴─────┐      ┌─────┴──────┐        ┌─────┴──────┐
+                  │   Muse    │      │   Claude   │        │   iPhone   │
+                  │ applies   │      │ verifier   │        │ Shortcuts  │
+                  └─────▲─────┘      └────────────┘        └────────────┘
+                        │ clicks Allow on upload prompts
+                  ┌─────┴──────────┐
+                  │ MuseAutoAllow  │  (Mac, always on)
+                  └────────────────┘
+```
+
+- **Muse** does the applying. It pauses on every file upload, because Muse has no "always allow" for uploads.
+- **MuseAutoAllow** clicks Allow, so Muse never waits on you.
+- **Muse** reads email and SMS verification **codes** from the inbox and types them in.
+- Verification **links** can't be clicked by Muse (they arrive redacted), so the **Claude** task opens them every hour. This is the "auto-click option" in `muse-prompt.md` Part 6.7.
+
+## 3. What you need
+
+- A **Mac that stays on**, plugged in.
+- The **Muse** desktop app.
+- The **Claude** desktop app (for the scheduled task), plus a browser Claude can drive (Claude in Chrome or Claude's built-in browser).
+- One **dedicated Gmail** used only for job applications, not your personal inbox.
+- An **iPhone**, if sites text you codes (optional but recommended).
+- **Xcode Command Line Tools** to build the Mac app: `xcode-select --install`.
+
+## 4. Setup, in order
+
+### Step 1: Sign in to the application Gmail in both Muse and Claude
+
+Both apps need to read the **same** application inbox:
+
+| App | How | Why |
+|---|---|---|
+| Muse | Ask Muse to connect your email. It gives you a connect link; finish it and check that Muse can read the inbox. Details: `muse-prompt.md` Part 6.4. | Reads confirmations, rejections, interview invites and verification codes. |
+| Claude | Settings → Connectors → Gmail, connect the application Gmail. Also sign in to that Gmail in the browser Claude will use. | The verifier searches the inbox and labels emails. |
+
+Never paste passwords into a chat. Website logins go through Muse's secure entry form (`muse-prompt.md` Part 6.2).
+
+### Step 2: Set up Muse
+
+1. Open `muse-prompt.md` and replace every `[PLACEHOLDER]` (legend at the top of the file).
+2. Give it to Muse as its rules, and create the scheduled job-application tasks it describes (Part 1).
+3. Go through the checklist in Part 6.9: save your logins, connect the inbox, decide how uploads and links get handled.
+
+### Step 3: Forward SMS codes to the Gmail (iPhone Shortcuts)
+
+Some sites text a code instead of emailing it. Muse can only read email, so forward those texts:
+
+1. On the iPhone, open **Shortcuts** → **Automation** → **+** → **Message**.
+2. **Message Contains:** `code`. Choose **Run Immediately** (turn off "Notify When Run" if you like) → **Next**.
+3. Add the action **Send Email**:
+   - Recipient: your application Gmail.
+   - Subject: `SMS code`.
+   - Body: tap and pick **Shortcut Input → Content** (the message text).
+   - Expand the action and turn **Show Compose Sheet** off, so it sends without asking.
+4. Repeat for other words your sites use, e.g. `verification`, `passcode`. One automation per keyword.
+5. Test it: ask any site to text you a code and check that the email arrives.
+
+The iPhone's Mail app must have an account set up to send from. Muse checks the inbox for both the site's own code email and this forwarded one (Part 6.6).
+
+### Step 4: Set up the Claude email verifier (scheduled task)
+
+1. Open `claude-job-email-verifier.md` and replace `<YOUR_JOB_APP_GMAIL>` and `<YOUR_AGENT_NAME>` (e.g. "Muse").
+2. In the Claude desktop app, create a **scheduled task**:
+   - Schedule: **every hour**.
+   - Prompt: the block in section 2 of that file, pasted as-is.
+   - Turn on automatic approval and the option to run on this computer, so it can use your browser while you're away.
+   - Shortcut: tell Claude in a chat _"create a scheduled task that runs every hour with this prompt"_ and paste the block.
+3. Run it once by hand and accept the browser permission prompts for the job-site domains.
+
+### Step 5: Install the Mac auto-approve app
+
+**Option A: build the ready-made app (recommended).**
 
 ```
 git clone https://github.com/Dark417/muse-auto-job-apply
@@ -10,63 +112,59 @@ cd muse-auto-job-apply/muse-auto-allow
 ./build.sh
 ```
 
-Then add `muse-auto-allow/MuseAutoAllow.app` under System Settings → Privacy & Security → Accessibility and switch it on. After that, double-click `muse-on.command` to start it (`muse-off.command` stops it). Full instructions are in [muse-auto-allow/README.md](muse-auto-allow/README.md). Prefer to have an AI generate it for you? Use the prompt in `mac-auto-approve-script-prompt.md` (section 3 below).
+1. System Settings → Privacy & Security → **Accessibility** → **+** → choose `muse-auto-allow/MuseAutoAllow.app` → switch it **on**.
+2. Open Muse on the approvals page (shield tab in the right panel) and leave it there.
+3. Double-click **`muse-on.command`**. It starts in the background, so you can close the Terminal window. `muse-off.command` stops it.
 
----
+Full details: [muse-auto-allow/README.md](muse-auto-allow/README.md).
 
-Three prompts that together run a hands-off job-application pipeline on a Mac that stays on:
+**Option B: have an AI build it.** Open Claude Code (or a similar tool) in an empty folder and paste `mac-auto-approve-script-prompt.md`.
 
-| # | File | Runs in | What it does |
-|---|------|---------|--------------|
-| 1 | [muse-prompt.md](muse-prompt.md) | **Muse** (your personal assistant app) | The operating manual for the assistant: it sources jobs, applies, tracks every application in one log and spreadsheet, and reports. Replace the `[PLACEHOLDERS]` with your details, then give it to Muse. |
-| 2 | [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude** (scheduled task) | Every hour it checks your application Gmail for "verify your email / activate your account" messages from job sites, opens each link once in your browser, and labels the email so it's never opened twice. |
-| 3 | [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **An AI coding assistant on your Mac** (e.g. Claude Code) | Has the AI build a small background Mac program that clicks **Allow** on Muse's approval prompts (such as file uploads), which Muse won't auto-approve. |
+> MuseAutoAllow clicks Allow on **every** Muse prompt, including sensitive-site access. See its README to limit it to uploads.
 
-## How the pieces fit
+### Step 6: Keep the Mac awake forever
 
-1. **Muse** does the applying. It stops and asks for approval on some steps, mainly file uploads.
-2. **The Mac script (3)** clicks Allow for you, so Muse never sits waiting.
-3. **Claude (2)** verifies the accounts that job sites create, so applications don't stall on unverified emails.
+The app can't click on a sleeping or locked Mac. In System Settings:
 
-## Before you start: log in to your email in both apps
+| Setting | Where | Value |
+|---|---|---|
+| Don't sleep | Battery → Options (laptop) or Energy (desktop) | **Prevent automatic sleeping when the display is off**: on |
+| Don't lock | Lock Screen | **Require password after screen saver begins or display is turned off**: Never |
+| Screen saver | Lock Screen | **Start Screen Saver when inactive**: Never (optional) |
 
-Use one **dedicated job-application Gmail**, not your personal inbox.
-
-- **In Muse:** connect that Gmail through Muse's email connector, so it can read confirmations, verification codes, rejections and interview invites. See Part 6 of `muse-prompt.md`.
-- **In Claude:** connect the same Gmail under Settings → Connectors → Gmail. The email verifier (2) needs it. Also sign in to that Gmail in the browser Claude will drive.
-
-Never paste passwords into prompts or chats. Each prompt says where credentials belong.
-
-## Setup, step by step
-
-### 1. Set up Muse
-1. Open `muse-prompt.md`, fill in every `[PLACEHOLDER]`, and give it to Muse as its instructions.
-2. Connect the application Gmail in Muse and check that it can read the inbox.
-3. Create your scheduled job tasks in Muse as the guide describes.
-
-### 2. Set up the Claude email verifier
-1. Connect Gmail in Claude, as above.
-2. Install a browser Claude can drive (Claude in Chrome, or the Claude desktop app).
-3. Create a scheduled task that runs every hour and paste the prompt from `claude-job-email-verifier.md` (replace `<YOUR_JOB_APP_GMAIL>` and `<YOUR_AGENT_NAME>`). Turn on automatic approval and "require this computer".
-
-### 3. Build the Mac auto-approve script
-1. On the Mac that will stay on, open an AI coding assistant that can run shell commands (e.g. Claude Code) in an empty folder.
-2. Paste the whole of `mac-auto-approve-script-prompt.md`, replacing `<PROJECT_DIR>` with that folder. The AI writes the Swift program, builds it, and creates a double-click launcher (`muse-on.command`).
-3. **Grant Accessibility permission** when the AI asks: System Settings → Privacy & Security → Accessibility → add `MuseAutoAllow.app` and switch it on. Do this again after every rebuild.
-4. Open Muse on the approvals (shield) tab and leave it there. Double-click `muse-on.command`. You can then close the Terminal window.
-5. Check the log (`muse-autoallow.log` in the folder). With a pending approval you should see `Allow pressed (ok): …` within 2 minutes.
-
-Note: this script clicks Allow on **every** Muse prompt by default, including sensitive-site access. The prompt tells the AI to ask whether you want that restricted to uploads.
-
-### 4. Keep the Mac on forever
-The script can't click on a sleeping or locked Mac. In System Settings:
-- Keep the Mac **plugged in**, with the lid open (or an external monitor connected).
-- Under Battery/Energy, turn on **"Prevent automatic sleeping on power adapter when the display is off"**, or set sleep to Never.
-- Under Lock Screen, set **"Require password after screen saver begins or display is turned off"** to **Never**. A locked screen blocks the clicking, and this leaves your Mac unlocked, so use it only somewhere you trust.
-- The display can turn off or be dimmed. The system just has to stay awake.
+- Keep it **plugged in** with the lid **open** (or closed with an external monitor and power).
+- The display can turn off or be dimmed; only the system has to stay awake.
+- This leaves your Mac unlocked, so only do it somewhere you trust.
 - After a reboot, double-click `muse-on.command` again.
 
-## Stop everything
-- Mac script: `pkill -f MuseAutoAllow.app`
-- Claude verifier: pause or delete the scheduled task in Claude.
-- Muse: pause its scheduled tasks in the app.
+## 5. Check it's working
+
+| Piece | How to check |
+|---|---|
+| MuseAutoAllow | `pgrep -fl MuseAutoAllow` shows one line. `tail muse-auto-allow/muse-autoallow.log` shows `Allow pressed (ok): …` after an upload prompt. |
+| Claude verifier | Its hourly runs say "No new verification emails." or list verified companies. Verified emails get the `ats-verified` label in Gmail. |
+| SMS forwarding | Texted codes show up in the application Gmail within a minute. |
+| Muse | Its reports show new applications; upload prompts don't pile up in the approvals list. |
+
+## 6. Tuning
+
+- **Sourcing window (`muse-prompt.md` Part 3.2):** the default is jobs posted in the last **12 hours**, falling back to **24 hours**. On a slow day, or once you've applied to everything fresh, Muse finds **nothing new and stops applying**. If your reports show zero new work, widen it (e.g. 24h primary, 72h fallback) and update the matching lines in Part 7.1 and Part 13.1.
+- **Auto-approve timing:** `interval` (default 2 min) at the top of `MuseAutoAllow.swift`. Rebuild and re-grant Accessibility after changing it.
+- **Verifier lookback:** if you run the Claude task less often than hourly, raise `newer_than:4h` in its prompt.
+
+## 7. Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Log says `NOT TRUSTED` | Remove `MuseAutoAllow` from Accessibility, add it again, switch it on, then `muse-off.command` and `muse-on.command`. This is needed after every rebuild or folder move. |
+| Upload prompts pile up | Is the Mac asleep or locked? Is the app running (`pgrep`)? Is Muse open on the approvals page? |
+| Muse says a code is missing | Check that SMS forwarding works and that Muse is reading the **application** inbox, not a personal one. |
+| Verification emails stay unlabeled | The page asked for a password or form ("needs user"), or the domain isn't on the allow-list. Finish it by hand, or add the domain. |
+| No new applications for a day | Sourcing window too narrow; see Tuning. |
+
+## 8. Stop everything
+
+- **Mac app:** double-click `muse-off.command`, or run `pkill -f MuseAutoAllow.app`.
+- **Claude verifier:** pause or delete the scheduled task in Claude.
+- **Muse:** pause its scheduled tasks in the app.
+- **SMS forwarding:** turn off the automations in iPhone Shortcuts.

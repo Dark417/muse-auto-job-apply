@@ -181,6 +181,9 @@ dispatch out of order) and one log + one spreadsheet.
   silently drop it.
 - Deadline items are NOT a back door to old postings. A deadline role is worked only if it is
   already dispatched/filed and you call it, or if its posting itself is within 24 hours.
+- **These windows are tunable.** 12h/24h is strict: on a slow day, or once every fresh fit is
+  applied, sourcing finds nothing and applying stops. If a day yields no new work, widen them
+  (e.g. 24h primary, 72h fallback) and update the same numbers in Part 7.1 and Part 13.1.
 
 ## 3.3 Startup cap and contractor hold
 
@@ -446,7 +449,7 @@ and the assistant only ever learns whether a sign-in worked.
   ~10 minutes). If a code expired, request a fresh code and retry once.
 - **SMS codes:** set up a phone automation that forwards SMS verification codes to the
   application inbox, filtered to code-type messages only (in the original setup: an iPhone
-  Shortcuts automation, live and working). Then the rule is simple: for ANY application needing
+  Shortcuts automation, live and working; setup steps are in the repo README, Step 3). Then the rule is simple: for ANY application needing
   a code, always check the application inbox for BOTH the service's original code email AND your
   forwarded SMS email, and enter the matching code promptly.
 - Allow a short delay after a code is requested for the forwarding automation to deliver the SMS
@@ -474,7 +477,8 @@ and the assistant only ever learns whether a sign-in worked.
 - A pending link not cleared in 2 days is removed from everywhere — treat it as unwanted or lost.
   Do not let old uncleared links block new work.
 - **Auto-click option:** an hourly automation (runs at :00 every hour in the original setup) can
-  click fresh links for you. If a link is expired or about to expire, the loop sends a fresh one
+  click fresh links for you. In this repo that is the Claude scheduled task in
+  `claude-job-email-verifier.md`. If a link is expired or about to expire, the loop sends a fresh one
   again at :55, or closes the item, before the next :00 run, so the fresh link is there for the
   auto-click.
 - **Separate the two:** codes are typed in by a window; links are tapped by you (or your
