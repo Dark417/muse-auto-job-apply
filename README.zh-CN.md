@@ -28,19 +28,24 @@
 
 ## 2. 各部分怎么配合
 
-```
-                 ┌──────────────── 求职专用 Gmail ────────────────┐
-                 │  投递确认 · 邮件验证码 · 短信验证码 · 验证链接  │
-                 └──────▲──────────────────▲────────────────▲──────┘
-                        │ 读验证码          │ 打开验证链接     │ 转发短信验证码
-                  ┌─────┴─────┐      ┌─────┴──────┐   ┌─────┴──────┐
-                  │   Muse    │      │   Claude   │   │   iPhone   │
-                  │  投简历   │      │  验证链接   │   │  快捷指令   │
-                  └─────▲─────┘      └────────────┘   └────────────┘
-                        │ 自动点上传请求的 Allow
-                  ┌─────┴──────────┐
-                  │ MuseAutoAllow  │ （Mac，一直开着）
-                  └────────────────┘
+```mermaid
+flowchart LR
+    Jobs["招聘网站<br/>LinkedIn · Greenhouse · Workday · …"]
+    Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
+    Allow["<b>MuseAutoAllow</b><br/>Mac 应用，每 2 分钟"]
+    Gmail[("求职专用<br/>Gmail")]
+    Claude["<b>Claude</b><br/>每小时定时任务"]
+    Phone["<b>iPhone</b><br/>快捷指令自动化"]
+
+    Muse -- "提交申请" --> Jobs
+    Muse -. "暂停：上传需要批准" .-> Allow
+    Allow -- "点 Allow" --> Muse
+    Jobs -- "投递确认 · 验证码 · 验证链接" --> Gmail
+    Jobs -- "短信验证码" --> Phone
+    Phone -- "转发短信验证码" --> Gmail
+    Gmail -- "读验证码和投递确认" --> Muse
+    Gmail -- "账号验证链接" --> Claude
+    Claude -- "打开一次链接，打标签" --> Jobs
 ```
 
 - **Muse** 负责投递。每次上传文件都会停下来等批准，因为 Muse 没有"上传永远允许"的选项。

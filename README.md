@@ -28,19 +28,24 @@ A hands-off job-application pipeline that runs on a Mac you leave on:
 
 ## 2. How the pieces fit
 
-```
-                 ┌──────────── dedicated job-application Gmail ────────────┐
-                 │   confirmations · codes · SMS codes · verification links │
-                 └──────▲──────────────────▲─────────────────────▲──────────┘
-                        │ reads codes      │ opens links         │ forwards SMS codes
-                  ┌─────┴─────┐      ┌─────┴──────┐        ┌─────┴──────┐
-                  │   Muse    │      │   Claude   │        │   iPhone   │
-                  │ applies   │      │ verifier   │        │ Shortcuts  │
-                  └─────▲─────┘      └────────────┘        └────────────┘
-                        │ clicks Allow on upload prompts
-                  ┌─────┴──────────┐
-                  │ MuseAutoAllow  │  (Mac, always on)
-                  └────────────────┘
+```mermaid
+flowchart LR
+    Jobs["Job sites<br/>LinkedIn · Greenhouse · Workday · …"]
+    Muse["<b>Muse</b><br/>sources &amp; applies"]
+    Allow["<b>MuseAutoAllow</b><br/>Mac app, every 2 min"]
+    Gmail[("Job-application<br/>Gmail")]
+    Claude["<b>Claude</b><br/>hourly scheduled task"]
+    Phone["<b>iPhone</b><br/>Shortcuts automation"]
+
+    Muse -- "submits applications" --> Jobs
+    Muse -. "pauses: upload needs approval" .-> Allow
+    Allow -- "clicks Allow" --> Muse
+    Jobs -- "confirmations · codes · verify links" --> Gmail
+    Jobs -- "SMS codes" --> Phone
+    Phone -- "forwards SMS codes" --> Gmail
+    Gmail -- "reads codes &amp; confirmations" --> Muse
+    Gmail -- "verify-account links" --> Claude
+    Claude -- "opens link once, labels email" --> Jobs
 ```
 
 - **Muse** does the applying. It pauses on every file upload, because Muse has no "always allow" for uploads.
