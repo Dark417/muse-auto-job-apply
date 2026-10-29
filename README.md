@@ -1,5 +1,19 @@
 # Muse auto job apply
 
+## Quick start: the auto-approve app
+
+[`muse-auto-allow/`](muse-auto-allow/) is a ready-to-build Mac app that clicks Allow on Muse's approval prompts for you.
+
+```
+git clone https://github.com/Dark417/muse-auto-job-apply
+cd muse-auto-job-apply/muse-auto-allow
+./build.sh
+```
+
+Then add `muse-auto-allow/MuseAutoAllow.app` under System Settings → Privacy & Security → Accessibility and switch it on. After that, double-click `muse-on.command` to start it (`muse-off.command` stops it). Full instructions are in [muse-auto-allow/README.md](muse-auto-allow/README.md). Prefer to have an AI generate it for you? Use the prompt in `mac-auto-approve-script-prompt.md` (section 3 below).
+
+---
+
 Three prompts that together run a hands-off job-application pipeline on a Mac that stays on:
 
 | # | File | Runs in | What it does |
