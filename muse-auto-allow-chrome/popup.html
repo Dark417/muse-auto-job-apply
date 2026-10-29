@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font: 13px -apple-system, system-ui, sans-serif; width: 360px; margin: 12px; }
+  h1 { font-size: 15px; margin: 0 0 8px; }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  button { padding: 4px 10px; }
+  pre { background: #f4f4f4; padding: 8px; height: 220px; overflow: auto; white-space: pre-wrap; font-size: 11px; margin: 0; }
+  .hint { color: #666; font-size: 11px; margin: 6px 0; }
+</style>
+</head>
+<body>
+  <h1>Muse Auto Allow</h1>
+  <div class="row">
+    <label><input type="checkbox" id="enabled"> Enabled (checks every 2 min)</label>
+  </div>
+  <div class="row">
+    <button id="run">Run now</button>
+    <button id="clear">Clear log</button>
+  </div>
+  <p class="hint">Keep a muse.ai tab open on the approvals (shield) tab.</p>
+  <pre id="log"></pre>
+  <script src="popup.js"></script>
+</body>
+</html>

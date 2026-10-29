@@ -2,8 +2,8 @@
 
 # Muse 自动投简历
 
-一套放在一台常开 Mac 上、基本不用管的自动求职流水线：
-**Muse** 负责投简历，**Claude** 负责点账号验证链接，一个小 **Mac 应用** 负责在 Muse 弹出上传请求时点 Allow。
+一套放在一台常开电脑上、基本不用管的自动求职流水线：
+**Muse** 负责投简历，**Claude** 负责点账号验证链接，一个小 **Mac 应用**或 **Chrome 扩展**（Windows 和 Mac 都能用）负责在 Muse 弹出上传请求时点 Allow。
 
 ## 目录
 1. [仓库里有什么](#1-仓库里有什么)
@@ -24,15 +24,16 @@
 | [muse-prompt.md](muse-prompt.md) | **Muse** | 助手的完整操作手册：找新职位、在公司官网投递、从邮箱读验证码、把所有记录写进一个日志和一个表格、定时汇报。 |
 | [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude**（每小时一次的定时任务） | 在求职专用 Gmail 里找招聘网站发来的 "verify your email / activate your account" 邮件，每个链接只打开一次，并给邮件打标签，保证不会重复打开。 |
 | [muse-auto-allow/](muse-auto-allow/) | **你的 Mac** | 可直接编译的后台应用，每 2 分钟在 Muse 的审批列表里点一次 **Allow**。 |
-| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **AI 编程助手**（比如 Claude Code） | 上面那个文件夹的替代方案：一段 prompt，让 AI 从零帮你生成同样的应用。 |
+| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | **Chrome**（Windows 和 Mac） | 同样的自动点 Allow，做成 Chrome 扩展，用在 Muse 网页版（muse.ai）上。在 Chrome 里加载这个文件夹就行，不用编译。 |
+| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **AI 编程助手**（比如 Claude Code） | `muse-auto-allow/` 的替代方案：一段 prompt，让 AI 从零帮你生成同样的应用。 |
 
 ## 2. 各部分怎么配合
 
 ```mermaid
 flowchart LR
-    subgraph MAC["你的 Mac · 一直开着"]
+    subgraph MAC["你的电脑 · 一直开着"]
         direction TB
-        Allow["<b>MuseAutoAllow</b><br/>每 2 分钟"]
+        Allow["<b>Muse Auto Allow</b><br/>Mac 应用或 Chrome 扩展"]
         Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
         Claude["<b>Claude</b><br/>每小时定时任务"]
         Allow -- "点上传请求的<br/>Allow" --> Muse
@@ -58,12 +59,12 @@ flowchart LR
 
 ## 3. 需要准备什么
 
-- 一台**一直开着**、插着电的 **Mac**。
-- **Muse** 桌面应用。
+- 一台**一直开着**、插着电的电脑：**Mac**（Mac 应用或 Chrome 扩展都行）或 **Windows 电脑**（用 Chrome 扩展）。
+- **Muse**：Mac 应用配 Muse 桌面应用；Chrome 扩展配 Chrome 里的 Muse 网页版 https://muse.ai。
 - **Claude** 桌面应用（用来跑定时任务），以及 Claude 能操作的浏览器（Claude in Chrome 或 Claude 内置浏览器）。
 - 一个**只用来求职的 Gmail**，不要用私人邮箱。
 - 一部 **iPhone**，如果有网站用短信发验证码（可选，但推荐）。
-- 编译 Mac 应用要用的 **Xcode Command Line Tools**：`xcode-select --install`。
+- 只有 Mac 应用需要：**Xcode Command Line Tools**（`xcode-select --install`）。
 
 ## 4. 按顺序设置
 
@@ -110,9 +111,17 @@ iPhone 自带的"邮件"App 里要设置好一个能发信的账户。Muse 会�
    - 偷懒的办法：在 Claude 聊天里说 _"create a scheduled task that runs every hour with this prompt"_，然后粘贴那段 prompt。
 3. 先手动跑一次，在浏览器弹出权限请求时，允许它访问各个招聘网站的域名。
 
-### 第 5 步：安装 Mac 自动批准应用
+### 第 5 步：安装自动批准工具
 
-**方案 A：直接编译现成的应用（推荐）。**
+**二选一**。两个做的事一样：每 2 分钟在 Muse 的 "Needs review" 里点 Allow。
+
+| | 方案 A：Mac 应用 | 方案 B：Chrome 扩展 |
+|---|---|---|
+| 支持 | Mac | Windows 和 Mac |
+| 点哪里 | Muse 桌面应用 | Chrome 里的 Muse 网页版（muse.ai） |
+| 设置 | 编译 + 辅助功能权限 | 在 Chrome 里加载文件夹 |
+
+**方案 A：Mac 应用。**
 
 ```
 git clone https://github.com/Dark417/muse-auto-job-apply
@@ -126,13 +135,24 @@ cd muse-auto-job-apply/muse-auto-allow
 
 完整说明见 [muse-auto-allow/README.md](muse-auto-allow/README.md)（英文）。
 
-**方案 B：让 AI 帮你生成。** 在一个空文件夹里打开 Claude Code（或类似工具），粘贴 `mac-auto-approve-script-prompt.md` 的全部内容。
+**方案 B：Chrome 扩展（Windows 和 Mac）。**
 
-> MuseAutoAllow 会对 Muse 的**所有**请求点 Allow，包括访问敏感网站的请求。如果只想自动批准上传，看它的 README 怎么改。
+1. 下载仓库（像上面那样 `git clone`，或在 GitHub 上点 **Code → Download ZIP**）。
+2. Chrome → `chrome://extensions` → 打开**开发者模式** → **加载已解压的扩展程序** → 选择 `muse-auto-allow-chrome` 文件夹。
+3. 打开 https://muse.ai 并登录，把右侧面板停在审批页（盾牌 tab），标签页一直开着。
+4. Chrome → 设置 → 性能 → **始终让这些网站保持活动状态** → 添加 `muse.ai`，免得 Chrome 让这个标签页休眠。
 
-### 第 6 步：让 Mac 永远不睡
+完整说明见 [muse-auto-allow-chrome/README.md](muse-auto-allow-chrome/README.md)（中英文）。
 
-Mac 睡着或者锁屏了，这个应用就点不了。在系统设置里：
+**方案 C：让 AI 帮你生成 Mac 应用。** 在一个空文件夹里打开 Claude Code（或类似工具），粘贴 `mac-auto-approve-script-prompt.md` 的全部内容。
+
+> 两个工具都会对 Muse 的**所有**请求点 Allow，包括访问敏感网站的请求。如果只想自动批准上传，看各自的 README 怎么改。
+
+### 第 6 步：让电脑永远不睡
+
+**Windows（Chrome 扩展）：** 设置 → 系统 → 电源 → 插电时睡眠设为**从不**，并保持 Chrome 开着。锁屏不影响扩展。
+
+**Mac：** Mac 应用在睡眠或锁屏时都点不了（Chrome 扩展只要求不睡眠）。在系统设置里：
 
 | 设置 | 位置 | 值 |
 |---|---|---|
@@ -143,13 +163,14 @@ Mac 睡着或者锁屏了，这个应用就点不了。在系统设置里：
 - 一直**插着电**，盖子**打开**（或者合盖但接着外接显示器和电源）。
 - 屏幕可以关掉或调暗，只要系统本身醒着就行。
 - 这样电脑就一直是解锁状态，只在你放心的地方这么做。
-- 重启之后，再双击一次 `muse-on.command`。
+- 重启之后，再双击一次 `muse-on.command`（Mac 应用），或者重新打开 Chrome 和 muse.ai 标签页（扩展）。
 
 ## 5. 检查是否在正常运行
 
 | 部分 | 怎么检查 |
 |---|---|
 | MuseAutoAllow | `pgrep -fl MuseAutoAllow` 显示一行。出现上传请求后，`tail muse-auto-allow/muse-autoallow.log` 里有 `Allow pressed (ok): …`。 |
+| Chrome 扩展 | 点扩展图标：出现上传请求后，日志里有 `Allow pressed: …`。图标上的数字是上一轮批准了几个。 |
 | Claude 验证任务 | 每小时的结果写着 "No new verification emails." 或者列出验证成功的公司。验证过的邮件在 Gmail 里带 `ats-verified` 标签。 |
 | 短信转发 | 短信验证码一分钟内出现在求职 Gmail 里。 |
 | Muse | 汇报里有新的投递；审批列表里的上传请求不会越积越多。 |
@@ -165,7 +186,7 @@ Mac 睡着或者锁屏了，这个应用就点不了。在系统设置里：
 | 现象 | 解决办法 |
 |---|---|
 | 日志里写 `NOT TRUSTED` | 在辅助功能里删掉 `MuseAutoAllow`，重新添加并打开开关，然后双击 `muse-off.command` 再双击 `muse-on.command`。每次重新编译或移动文件夹之后都要做一次。 |
-| 上传请求越积越多 | Mac 是不是睡着或锁屏了？应用还在运行吗（`pgrep`）？Muse 是不是停在审批页？ |
+| 上传请求越积越多 | 电脑是不是睡着了（Mac 应用还要求不锁屏）？应用还在运行吗（`pgrep`），或者扩展是否打开、muse.ai 标签页是否开着？Muse 是不是停在审批页？ |
 | Muse 说找不到验证码 | 检查短信转发是否正常，以及 Muse 读的是**求职**邮箱，不是私人邮箱。 |
 | 验证邮件一直没被打标签 | 页面要求输密码或填表（"needs user"），或者域名不在白名单里。手动处理，或者把域名加进白名单。 |
 | 一整天没有新投递 | 找职位的时间窗口太窄，见"调参"。 |
@@ -173,6 +194,7 @@ Mac 睡着或者锁屏了，这个应用就点不了。在系统设置里：
 ## 8. 全部停止
 
 - **Mac 应用**：双击 `muse-off.command`，或运行 `pkill -f MuseAutoAllow.app`。
+- **Chrome 扩展**：在扩展弹窗里关掉，或在 `chrome://extensions` 里移除。
 - **Claude 验证任务**：在 Claude 里暂停或删除这个定时任务。
 - **Muse**：在应用里暂停它的定时任务。
 - **短信转发**：在 iPhone 快捷指令里关掉那几个自动化。

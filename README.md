@@ -2,8 +2,8 @@
 
 # Muse auto job apply
 
-A hands-off job-application pipeline that runs on a Mac you leave on:
-**Muse** applies to jobs, **Claude** clicks the account-verification links, and a small **Mac app** clicks Allow on Muse's upload prompts.
+A hands-off job-application pipeline that runs on a computer you leave on:
+**Muse** applies to jobs, **Claude** clicks the account-verification links, and a small **Mac app** or **Chrome extension** (Windows & Mac) clicks Allow on Muse's upload prompts.
 
 ## Contents
 1. [What's in this repo](#1-whats-in-this-repo)
@@ -24,15 +24,16 @@ A hands-off job-application pipeline that runs on a Mac you leave on:
 | [muse-prompt.md](muse-prompt.md) | **Muse** | The assistant's operating manual: sources fresh jobs, applies on company sites, reads codes from your inbox, tracks everything in one log + spreadsheet, and reports. |
 | [claude-job-email-verifier.md](claude-job-email-verifier.md) | **Claude** (hourly scheduled task) | Finds "verify your email / activate your account" emails from job sites in your application Gmail, opens each link once, and labels the email so it's never opened twice. |
 | [muse-auto-allow/](muse-auto-allow/) | **Your Mac** | Ready-to-build background app that clicks **Allow** on Muse's approval prompts every 2 minutes. |
-| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **An AI coding assistant** (e.g. Claude Code) | Alternative to the folder above: a prompt that has an AI build the same app for you from scratch. |
+| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | **Chrome** (Windows & Mac) | The same auto-Allow as a Chrome extension for the Muse web app (muse.ai). Load the folder in Chrome; nothing to build. |
+| [mac-auto-approve-script-prompt.md](mac-auto-approve-script-prompt.md) | **An AI coding assistant** (e.g. Claude Code) | Alternative to `muse-auto-allow/`: a prompt that has an AI build the same app for you from scratch. |
 
 ## 2. How the pieces fit
 
 ```mermaid
 flowchart LR
-    subgraph MAC["Your Mac · always on"]
+    subgraph MAC["Your computer · always on"]
         direction TB
-        Allow["<b>MuseAutoAllow</b><br/>every 2 min"]
+        Allow["<b>Muse Auto Allow</b><br/>Mac app or Chrome extension"]
         Muse["<b>Muse</b><br/>sources &amp; applies"]
         Claude["<b>Claude</b><br/>hourly task"]
         Allow -- "clicks Allow<br/>on uploads" --> Muse
@@ -58,12 +59,12 @@ flowchart LR
 
 ## 3. What you need
 
-- A **Mac that stays on**, plugged in.
-- The **Muse** desktop app.
+- A **computer that stays on**, plugged in: a **Mac** (Mac app or Chrome extension) or a **Windows PC** (Chrome extension).
+- **Muse**: the desktop app (for the Mac app) or the web app at https://muse.ai in Chrome (for the extension).
 - The **Claude** desktop app (for the scheduled task), plus a browser Claude can drive (Claude in Chrome or Claude's built-in browser).
 - One **dedicated Gmail** used only for job applications, not your personal inbox.
 - An **iPhone**, if sites text you codes (optional but recommended).
-- **Xcode Command Line Tools** to build the Mac app: `xcode-select --install`.
+- For the Mac app only: **Xcode Command Line Tools** (`xcode-select --install`).
 
 ## 4. Setup, in order
 
@@ -110,9 +111,17 @@ The iPhone's Mail app must have an account set up to send from. Muse checks the 
    - Shortcut: tell Claude in a chat _"create a scheduled task that runs every hour with this prompt"_ and paste the block.
 3. Run it once by hand and accept the browser permission prompts for the job-site domains.
 
-### Step 5: Install the Mac auto-approve app
+### Step 5: Install the auto-approve tool
 
-**Option A: build the ready-made app (recommended).**
+Pick **one**. They do the same thing: click Allow on Muse's "Needs review" prompts every 2 minutes.
+
+| | Option A: Mac app | Option B: Chrome extension |
+|---|---|---|
+| Works on | Mac | Windows and Mac |
+| Clicks in | Muse desktop app | Muse web app (muse.ai) in Chrome |
+| Setup | Build + Accessibility permission | Load the folder in Chrome |
+
+**Option A: Mac app.**
 
 ```
 git clone https://github.com/Dark417/muse-auto-job-apply
@@ -126,13 +135,24 @@ cd muse-auto-job-apply/muse-auto-allow
 
 Full details: [muse-auto-allow/README.md](muse-auto-allow/README.md).
 
-**Option B: have an AI build it.** Open Claude Code (or a similar tool) in an empty folder and paste `mac-auto-approve-script-prompt.md`.
+**Option B: Chrome extension (Windows & Mac).**
 
-> MuseAutoAllow clicks Allow on **every** Muse prompt, including sensitive-site access. See its README to limit it to uploads.
+1. Get the repo (`git clone` as above, or **Code → Download ZIP** on GitHub).
+2. Chrome → `chrome://extensions` → turn on **Developer mode** → **Load unpacked** → choose the `muse-auto-allow-chrome` folder.
+3. Open https://muse.ai, sign in, open the right panel on the approvals (shield) tab, and leave the tab open.
+4. Chrome → Settings → Performance → **Always keep these sites active** → add `muse.ai`, so Chrome doesn't put the tab to sleep.
 
-### Step 6: Keep the Mac awake forever
+Full details: [muse-auto-allow-chrome/README.md](muse-auto-allow-chrome/README.md).
 
-The app can't click on a sleeping or locked Mac. In System Settings:
+**Option C: have an AI build the Mac app.** Open Claude Code (or a similar tool) in an empty folder and paste `mac-auto-approve-script-prompt.md`.
+
+> Both tools click Allow on **every** Muse prompt, including sensitive-site access. Each README shows how to limit it to uploads.
+
+### Step 6: Keep the computer awake forever
+
+**On Windows (Chrome extension):** Settings → System → Power → set sleep when plugged in to **Never**, and keep Chrome open. A locked screen is fine for the extension.
+
+**On a Mac:** the Mac app can't click on a sleeping or locked Mac (the Chrome extension only needs it awake). In System Settings:
 
 | Setting | Where | Value |
 |---|---|---|
@@ -143,13 +163,14 @@ The app can't click on a sleeping or locked Mac. In System Settings:
 - Keep it **plugged in** with the lid **open** (or closed with an external monitor and power).
 - The display can turn off or be dimmed; only the system has to stay awake.
 - This leaves your Mac unlocked, so only do it somewhere you trust.
-- After a reboot, double-click `muse-on.command` again.
+- After a reboot, double-click `muse-on.command` again (Mac app), or reopen Chrome and the muse.ai tab (extension).
 
 ## 5. Check it's working
 
 | Piece | How to check |
 |---|---|
 | MuseAutoAllow | `pgrep -fl MuseAutoAllow` shows one line. `tail muse-auto-allow/muse-autoallow.log` shows `Allow pressed (ok): …` after an upload prompt. |
+| Chrome extension | Click its icon: the log shows `Allow pressed: …` after an upload prompt. The badge shows how many it allowed in the last pass. |
 | Claude verifier | Its hourly runs say "No new verification emails." or list verified companies. Verified emails get the `ats-verified` label in Gmail. |
 | SMS forwarding | Texted codes show up in the application Gmail within a minute. |
 | Muse | Its reports show new applications; upload prompts don't pile up in the approvals list. |
@@ -165,7 +186,7 @@ The app can't click on a sleeping or locked Mac. In System Settings:
 | Symptom | Fix |
 |---|---|
 | Log says `NOT TRUSTED` | Remove `MuseAutoAllow` from Accessibility, add it again, switch it on, then `muse-off.command` and `muse-on.command`. This is needed after every rebuild or folder move. |
-| Upload prompts pile up | Is the Mac asleep or locked? Is the app running (`pgrep`)? Is Muse open on the approvals page? |
+| Upload prompts pile up | Is the computer asleep (or locked, for the Mac app)? Is the app running (`pgrep`), or the extension switched on with a muse.ai tab open? Is Muse open on the approvals page? |
 | Muse says a code is missing | Check that SMS forwarding works and that Muse is reading the **application** inbox, not a personal one. |
 | Verification emails stay unlabeled | The page asked for a password or form ("needs user"), or the domain isn't on the allow-list. Finish it by hand, or add the domain. |
 | No new applications for a day | Sourcing window too narrow; see Tuning. |
@@ -173,6 +194,7 @@ The app can't click on a sleeping or locked Mac. In System Settings:
 ## 8. Stop everything
 
 - **Mac app:** double-click `muse-off.command`, or run `pkill -f MuseAutoAllow.app`.
+- **Chrome extension:** switch it off in its popup, or remove it on `chrome://extensions`.
 - **Claude verifier:** pause or delete the scheduled task in Claude.
 - **Muse:** pause its scheduled tasks in the app.
 - **SMS forwarding:** turn off the automations in iPhone Shortcuts.
