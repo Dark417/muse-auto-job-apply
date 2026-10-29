@@ -30,22 +30,25 @@
 
 ```mermaid
 flowchart LR
-    Jobs["招聘网站<br/>LinkedIn · Greenhouse · Workday · …"]
-    Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
-    Allow["<b>MuseAutoAllow</b><br/>Mac 应用，每 2 分钟"]
-    Gmail[("求职专用<br/>Gmail")]
-    Claude["<b>Claude</b><br/>每小时定时任务"]
-    Phone["<b>iPhone</b><br/>快捷指令自动化"]
+    subgraph MAC["你的 Mac · 一直开着"]
+        direction TB
+        Allow["<b>MuseAutoAllow</b><br/>每 2 分钟"]
+        Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
+        Claude["<b>Claude</b><br/>每小时定时任务"]
+        Allow -- "点上传请求的<br/>Allow" --> Muse
+    end
 
-    Muse -- "提交申请" --> Jobs
-    Muse -. "暂停：上传需要批准" .-> Allow
-    Allow -- "点 Allow" --> Muse
-    Jobs -- "投递确认 · 验证码 · 验证链接" --> Gmail
+    Jobs["<b>招聘网站</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
+    Phone["<b>iPhone</b><br/>快捷指令"]
+    Gmail[("<b>求职专用<br/>Gmail</b>")]
+
+    Muse -- "投递" --> Jobs
+    Muse -- "读验证码和<br/>投递确认" --> Gmail
+    Claude -- "读验证链接" --> Gmail
+    Claude -- "每个链接只打开一次" --> Jobs
+    Jobs -- "邮件" --> Gmail
     Jobs -- "短信验证码" --> Phone
-    Phone -- "转发短信验证码" --> Gmail
-    Gmail -- "读验证码和投递确认" --> Muse
-    Gmail -- "账号验证链接" --> Claude
-    Claude -- "打开一次链接，打标签" --> Jobs
+    Phone -- "转发短信" --> Gmail
 ```
 
 - **Muse** 负责投递。每次上传文件都会停下来等批准，因为 Muse 没有"上传永远允许"的选项。

@@ -30,22 +30,25 @@ A hands-off job-application pipeline that runs on a Mac you leave on:
 
 ```mermaid
 flowchart LR
-    Jobs["Job sites<br/>LinkedIn · Greenhouse · Workday · …"]
-    Muse["<b>Muse</b><br/>sources &amp; applies"]
-    Allow["<b>MuseAutoAllow</b><br/>Mac app, every 2 min"]
-    Gmail[("Job-application<br/>Gmail")]
-    Claude["<b>Claude</b><br/>hourly scheduled task"]
-    Phone["<b>iPhone</b><br/>Shortcuts automation"]
+    subgraph MAC["Your Mac · always on"]
+        direction TB
+        Allow["<b>MuseAutoAllow</b><br/>every 2 min"]
+        Muse["<b>Muse</b><br/>sources &amp; applies"]
+        Claude["<b>Claude</b><br/>hourly task"]
+        Allow -- "clicks Allow<br/>on uploads" --> Muse
+    end
 
-    Muse -- "submits applications" --> Jobs
-    Muse -. "pauses: upload needs approval" .-> Allow
-    Allow -- "clicks Allow" --> Muse
-    Jobs -- "confirmations · codes · verify links" --> Gmail
+    Jobs["<b>Job sites</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
+    Phone["<b>iPhone</b><br/>Shortcuts"]
+    Gmail[("<b>Job-application<br/>Gmail</b>")]
+
+    Muse -- "applies" --> Jobs
+    Muse -- "reads codes &amp;<br/>confirmations" --> Gmail
+    Claude -- "reads verify links" --> Gmail
+    Claude -- "opens each link once" --> Jobs
+    Jobs -- "emails" --> Gmail
     Jobs -- "SMS codes" --> Phone
-    Phone -- "forwards SMS codes" --> Gmail
-    Gmail -- "reads codes &amp; confirmations" --> Muse
-    Gmail -- "verify-account links" --> Claude
-    Claude -- "opens link once, labels email" --> Jobs
+    Phone -- "forwards SMS" --> Gmail
 ```
 
 - **Muse** does the applying. It pauses on every file upload, because Muse has no "always allow" for uploads.
