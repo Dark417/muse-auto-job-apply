@@ -449,7 +449,7 @@ and the assistant only ever learns whether a sign-in worked.
   ~10 minutes). If a code expired, request a fresh code and retry once.
 - **SMS codes:** set up a phone automation that forwards SMS verification codes to the
   application inbox, filtered to code-type messages only (in the original setup: an iPhone
-  Shortcuts automation, live and working; setup steps are in the repo README, Step 3). Then the rule is simple: for ANY application needing
+  Shortcuts automation, live and working; setup steps are in the repo README, Step 5). Then the rule is simple: for ANY application needing
   a code, always check the application inbox for BOTH the service's original code email AND your
   forwarded SMS email, and enter the matching code promptly.
 - Allow a short delay after a code is requested for the forwarding automation to deliver the SMS
