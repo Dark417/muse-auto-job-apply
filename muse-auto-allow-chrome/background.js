@@ -60,8 +60,8 @@ async function log(line) {
 async function clickAllowButtons(delayMs, maxClicks) {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const text = (el) => (el.innerText || el.textContent || "").trim();
-  // Site-access cards say "Allow"; upload cards in the web app say "Allow once"
-  // next to a dropdown whose "always allow for this website" option is preferred.
+  // Site-access cards say "Allow"; upload cards in the web app say "Allow once",
+  // which always comes with a dropdown holding "Always allow" (used instead).
   const allowButtons = (root) =>
     [...root.querySelectorAll("button, [role=button]")].filter(
       (b) => /^Allow( once)?$/.test(text(b)) && !b.disabled && b.getAttribute("aria-disabled") !== "true");
@@ -95,31 +95,53 @@ async function clickAllowButtons(delayMs, maxClicks) {
     return null;
   };
 
-  // Opens the dropdown next to the button and picks the "always" option.
-  // Returns the option's text, or null (menu closed again) if there is none.
+  // A real press: menus that open on pointerdown (e.g. Radix) ignore a bare click().
+  const press = (el) => {
+    const o = { bubbles: true, cancelable: true, view: window, button: 0, pointerType: "mouse", isPrimary: true };
+    el.dispatchEvent(new PointerEvent("pointerdown", o));
+    el.dispatchEvent(new MouseEvent("mousedown", o));
+    el.dispatchEvent(new PointerEvent("pointerup", o));
+    el.dispatchEvent(new MouseEvent("mouseup", o));
+    el.click();
+  };
   const visible = (el) => el.offsetParent !== null || el.getClientRects().length > 0;
-  const allowAlways = async (btn) => {
-    let toggle = null;
-    for (let el = btn.parentElement, up = 0; el && up < 4 && !toggle; el = el.parentElement, up++) {
-      toggle = el.querySelector('[data-pel-click="chat_inline_approval_allow_options_menu_open"]');
+
+  // The dropdown toggle that sits next to an "Allow once" button.
+  const findToggle = (btn) => {
+    for (let el = btn.parentElement, up = 0; el && up < 4; el = el.parentElement, up++) {
+      const t = el.querySelector('[data-pel-click="chat_inline_approval_allow_options_menu_open"]') ||
+        [...el.querySelectorAll("button, [role=button]")].find((b) => b !== btn && b.getAttribute("aria-haspopup"));
+      if (t) return t;
     }
+    return null;
+  };
+
+  // "Allow once" means there's a dropdown: open it and click "Always allow".
+  // Returns the option's text, or null (menu closed again) if it can't be found.
+  const allowAlways = async (btn) => {
+    const toggle = findToggle(btn);
     if (!toggle) return null;
     const before = new Set(document.querySelectorAll("*"));  // menu items are new elements
-    toggle.click();
-    await sleep(600);
-    const options = [...document.querySelectorAll('[role^=menuitem], [role=option], button, li, a, div, span')]
-      .filter((el) => !before.has(el) && visible(el))
-      .filter((el) => { const s = text(el); return s.length < 80 && /always|this (web)?site/i.test(s) && !s.includes("\n"); });
-    // Innermost match is the clickable item, not its wrapper.
-    const option = options.find((el) => !options.some((o) => o !== el && el.contains(o)));
+    press(toggle);
+    let option = null;
+    for (let waited = 0; waited < 3000 && !option; waited += 200) {
+      await sleep(200);
+      const items = [...document.querySelectorAll('[role^=menuitem], [role=option], button, li, a, div, span')]
+        .filter((el) => !before.has(el) && visible(el))
+        .filter((el) => { const s = text(el); return s.length < 80 && !s.includes("\n") && /always/i.test(s); });
+      // Prefer an item that starts with "Always allow"; take the innermost element, not its wrapper.
+      const best = items.filter((el) => /^always allow/i.test(text(el)));
+      const pool = best.length ? best : items;
+      option = pool.find((el) => !pool.some((o) => o !== el && el.contains(o))) || null;
+    }
     if (!option) {
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
-      toggle.click();  // some menus only close on a second toggle click
       await sleep(300);
       return null;
     }
-    option.click();
-    return text(option);
+    const label = text(option);
+    press(option.closest('[role^=menuitem], [role=option], button, li, a') || option);
+    return label;
   };
 
   const pressed = [];
@@ -127,9 +149,16 @@ async function clickAllowButtons(delayMs, maxClicks) {
   while (pressed.length < maxClicks) {
     const next = findNext();
     if (!next || next.btn === last) break;  // nothing left, or the click didn't take
-    const how = await allowAlways(next.btn);
-    if (!how) next.btn.click();
-    pressed.push(`${next.title} [${how || text(next.btn)}]`);
+    let how = null;
+    if (/^Allow once$/.test(text(next.btn))) {
+      how = await allowAlways(next.btn);
+      // Couldn't find "Always allow": approve once rather than leave Muse stuck.
+      if (!how) { press(next.btn); how = "Allow once (no Always allow found)"; }
+    } else {
+      press(next.btn);
+      how = text(next.btn);
+    }
+    pressed.push(`${next.title} [${how}]`);
     last = next.btn;
     await sleep(delayMs);
   }
