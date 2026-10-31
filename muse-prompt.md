@@ -1,13 +1,41 @@
 # Automated Job Application System — Complete Instruction Guide
 
-A full operating manual for running an automated job-application loop with an AI assistant:
-sourcing, applying, tracking, and reporting, across multiple job boards and company career sites.
-Built from a live system that runs continuous application passes on three tracks.
+## ✏️ STEP 1: FILL IN YOUR INFORMATION HERE
+
+**Replace every `____` below with your own information, then save the file.**
+You only need to fill in this box. Everywhere else in this file, words like `[YOUR_NAME]` are
+filled in automatically from this box. Leave lowercase ones like `[name]` or `[date]` alone:
+the assistant fills those in itself.
+
+```text
+[YOUR_NAME]               = ____   (your full name, e.g. Jane Doe)
+[YOUR_JOB_TITLE]          = ____   (e.g. software engineer, data analyst, product designer)
+[YOUR_APPLICATION_EMAIL]  = ____   (a Gmail used ONLY for job applications)
+[YOUR_PERSONAL_EMAIL]     = ____   (your personal email, or "same")
+[YOUR_PHONE]              = ____   (with country code, e.g. +1 555 123 4567)
+[YOUR_CITY_STATE]         = ____   (e.g. Seattle, WA)
+[YOUR_LINKEDIN_URL]       = ____   (e.g. https://www.linkedin.com/in/janedoe)
+[YOUR_GITHUB_URL]         = ____   (or "none")
+[YOUR_RESUME_FILE]        = ____   (file name of your resume PDF, e.g. Jane_Doe_Resume.pdf)
+[YOUR_COVER_LETTER_FILE]  = ____   (file name of your cover letter PDF, or "none")
+[YOUR_WORK_AUTH_ANSWER]   = ____   (e.g. "US citizen", or "F-1 OPT, will need sponsorship later")
+[YOUR_SPONSORSHIP_TEXT]   = ____   (what to type when a form asks about visa sponsorship)
+[YOUR_CORE_STACK]         = ____   (your main skills, e.g. Python, SQL, React)
+[YOUR_BACKEND_YEARS]      = ____   (years of experience in your main field, e.g. 5)
+[YOUR_AI_YEARS]           = ____   (years of AI-related experience, or 0)
+[YOUR_DEGREE]             = ____   (e.g. MS Computer Science, University of Washington)
+[YOUR_COMP_FLOOR]         = ____   (lowest salary you'll apply for, e.g. $130k)
+[YOUR_COMP_FALLBACK]      = ____   (lower salary you accept when few jobs are left, e.g. $120k)
+[YOUR_DO_NOT_APPLY_LIST]  = ____   (companies to never apply to, or "none")
+```
+
+> **Note to the assistant:** wherever this file says `[YOUR_…]`, use the value from the box above.
+> If a value is still `____`, ask the user for it before the first application.
 
 ## How to use this document
 
-- **Everything in [BRACKETS] is a placeholder.** Replace it with your own values before running
-  anything. Nothing in brackets is a real credential, address, or identifier.
+- **Everything like `[YOUR_…]` is a placeholder.** Its value comes from the ✏️ box at the top.
+  Nothing in brackets is a real credential, address, or identifier.
 - **No passwords, codes, or secrets appear in this document, ever.** Credentials live only in the
   assistant's secure storage (see Part 6). Never paste a password into a chat message, a file,
   or a note.
@@ -16,24 +44,6 @@ Built from a live system that runs continuous application passes on three tracks
   work-authorization answer is worse than a missed lead.
 - **One assistant, one log, one spreadsheet.** All tracks share the same application log and the
   same records spreadsheet, so nothing is ever applied to twice.
-
-## Placeholder legend (replace all of these)
-
-- `[YOUR NAME]` — your full name, as it appears on applications
-- `[YOUR_APPLICATION_EMAIL]` — a dedicated email used ONLY for job applications (not your personal inbox)
-- `[YOUR_PERSONAL_EMAIL]` — your personal email, if different
-- `[YOUR_PHONE]` — your phone number, in international format (e.g. +1...)
-- `[YOUR_CITY_STATE]` — the single city/state you enter when a form asks for one location
-- `[YOUR_LINKEDIN_URL]` — your LinkedIn profile URL
-- `[YOUR_GITHUB_URL]` — your GitHub profile URL, if you use one
-- `[YOUR_RESUME_FILE]` — your resume PDF filename (e.g. `Your_Name_Resume.pdf`)
-- `[YOUR_COVER_LETTER_FILE]` — your cover letter PDF filename
-- `[YOUR_WORK_AUTH_ANSWER]` — your truthful work-authorization position (see Part 4)
-- `[YOUR_SPONSORSHIP_TEXT]` — the exact free-text sponsorship answer you use, if any
-- `[YOUR_AI_YEARS]` / `[YOUR_BACKEND_YEARS]` — your truthful years of experience for each area
-- `[YOUR_DEGREE]` — the single education entry you put on applications
-- `[YOUR_COMP_FLOOR]` / `[YOUR_COMP_FALLBACK]` — your compensation floors (see Part 3)
-- `[YOUR_DO_NOT_APPLY_LIST]` — companies and requisition IDs you will never apply to (see Part 3)
 
 ---
 
@@ -449,7 +459,7 @@ and the assistant only ever learns whether a sign-in worked.
   ~10 minutes). If a code expired, request a fresh code and retry once.
 - **SMS codes:** set up a phone automation that forwards SMS verification codes to the
   application inbox, filtered to code-type messages only (in the original setup: an iPhone
-  Shortcuts automation, live and working; setup steps are in the repo README, Step 5). Then the rule is simple: for ANY application needing
+  Shortcuts automation, live and working; setup steps are in the repo README, under "Optional extras"). Then the rule is simple: for ANY application needing
   a code, always check the application inbox for BOTH the service's original code email AND your
   forwarded SMS email, and enter the matching code promptly.
 - Allow a short delay after a code is requested for the forwarding automation to deliver the SMS
@@ -539,10 +549,10 @@ and the assistant only ever learns whether a sign-in worked.
 - **Note length: LinkedIn caps connection notes at 300 characters.** The full template will not
   fit — trim the phone/GitHub line first. Short template (adapt to your own details):
 
-> "Hello [name], I'm [YOUR NAME], a software engineer with [YOUR_BACKEND_YEARS]+ years of
-> experience building backend apps and AI agents ([your core stack]). I see you're hiring a
+> "Hello [name], I'm [YOUR_NAME], a [YOUR_JOB_TITLE] with [YOUR_BACKEND_YEARS]+ years of
+> experience building backend apps and AI agents ([YOUR_CORE_STACK]). I see you're hiring a
 > [role] — I'm very interested and would love to connect. My email: [YOUR_APPLICATION_EMAIL].
-> Best, [YOUR NAME]"
+> Best, [YOUR_NAME]"
 
 - Never use LinkedIn's "Share your contact info?" dialog — always dismiss it. Contact details go
   out only inside approved message texts, never through that dialog (it can surface stale data).

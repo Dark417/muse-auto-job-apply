@@ -41,7 +41,7 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也一样能用。
 - **不让 Chrome 休眠这个标签页：** Chrome 设置 → **性能** → **始终让这些网站保持活动状态** → **添加** → `muse.ai`。
 - **电脑不能睡眠：**
   - **Windows：** 设置 → 系统 → **电源** → 插电时睡眠设为**从不**。锁屏没关系。
-  - **Mac：** 见[主 README](../README.md) 第 6 步。
+  - **Mac：** 见[主 README](../README.md) 第 3 步。
 
 ## 更新
 
@@ -116,7 +116,7 @@ The number on the toolbar icon is how many requests it approved in the last chec
 - **Stop Chrome from putting the tab to sleep:** Chrome Settings → **Performance** → **Always keep these sites active** → **Add** → `muse.ai`.
 - **Don't let the computer sleep:**
   - **Windows:** Settings → System → **Power** → when plugged in, sleep after **Never**. A locked screen is fine.
-  - **Mac:** see Step 6 in the [main README](../README.en.md#step-6-keep-the-computer-awake).
+  - **Mac:** see Step 3 in the [main README](../README.en.md#step-3-turn-it-on-and-leave-muse-open).
 
 ## Update
 

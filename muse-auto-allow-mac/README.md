@@ -28,7 +28,16 @@
 
 > ⚠️ **Muse 必须一直停在 Approvals 页面。** 关掉面板、切到 Activity / Upcoming / Identity、或者退出 Muse，它就什么都点不到。Muse 窗口被别的窗口挡住没关系。
 
-> ⚠️ Mac 要一直**醒着并且不锁屏**。睡眠、合盖、锁屏都会让它停下来。设置方法见[主 README](../README.md) 第 6 步。重启后要再双击一次 `muse-on.command`。
+> ⚠️ Mac 要一直**醒着并且不锁屏**。睡眠、合盖、锁屏都会让它停下来。重启后要再双击一次 `muse-on.command`。
+
+在系统设置里：
+
+| 设置 | 位置 | 设为 |
+|---|---|---|
+| 显示器关闭时防止自动进入睡眠 | 电池 → 选项（笔记本）或 节能（台式机） | **打开** |
+| 屏幕保护程序启动或显示器关闭后需要密码 | 锁定屏幕 | **永不** |
+
+一直插着电，盖子打开（或合盖但接着外接显示器）。这样 Mac 会一直不锁屏，只在你放心的地方这么做。
 
 ## 确认在工作
 
@@ -85,7 +94,16 @@ A small Mac app that runs in the background. When the Muse desktop app asks for 
 
 > ⚠️ **Muse must stay on the Approvals page.** If you close the panel, switch to Activity / Upcoming / Identity, or quit Muse, nothing gets clicked. The Muse window can be behind other windows.
 
-> ⚠️ The Mac must stay **awake and unlocked**. Sleep, a closed lid, or a locked screen stops it. See Step 6 in the [main README](../README.en.md#step-6-keep-the-computer-awake). After a restart, double-click `muse-on.command` again.
+> ⚠️ The Mac must stay **awake and unlocked**. Sleep, a closed lid, or a locked screen stops it. After a restart, double-click `muse-on.command` again.
+
+In System Settings:
+
+| Setting | Where | Set to |
+|---|---|---|
+| Prevent automatic sleeping when the display is off | Battery → Options (laptop) or Energy (desktop) | **On** |
+| Require password after screen saver begins or display is turned off | Lock Screen | **Never** |
+
+Keep it plugged in with the lid open (or closed with an external monitor). This leaves the Mac unlocked, so only do it somewhere you trust.
 
 ## Check it's working
 
