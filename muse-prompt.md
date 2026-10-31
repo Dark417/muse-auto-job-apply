@@ -53,11 +53,13 @@ assistant fills those in itself. Not sure what to write in box B? See the **exam
 - **Skip keywords** are the easiest way to stay at your level. Any job whose **title** contains
   one of them is skipped:
   - Experienced (3–8 years)? Skip the very senior and the very junior:
-    `principal, staff, director, head of, VP, intern, internship, new grad, entry level`
+    `principal, staff, director, head of, VP, intern, internship, new grad, graduate, lead, entry level`
   - Student or new graduate? Skip anything senior:
     `senior, sr, staff, principal, lead, manager, director`
   - Looking for an internship only? Skip full-time senior roles:
     `senior, staff, principal, manager` and set `[TARGET_LEVELS] = internship`.
+- **Stack skips:** skip a role whose required or primary stack is Android, Swift/iOS, .NET, Ruby,
+  Go, or C++ — no matter how good the rest looks.
 - **Max years:** set it a little above your real years (e.g. you have 3 → put 5). Many
   postings ask for more than they really need.
 - **Salary:** if you're not sure, write `any`. A floor that's too high means fewer applications.
@@ -140,8 +142,9 @@ Student looking for a summer internship:
 The short version, so you know why the rules below look the way they do:
 
 1. **Fresh jobs first.** Apply within hours of a job being posted. Early applicants are the ones
-   recruiters actually read; a two-week-old posting is often already filled. That's why Muse only
-   looks at jobs from the last 12–24 hours.
+   recruiters actually read; a two-week-old posting is often already filled. That's why LinkedIn
+   sourcing works a ladder (12 → 24 → 36 → 48 hours, 48 hours hard limit) while company-site
+   sourcing has no date gate and works newest first — see Part 3.2.
 2. **Volume, but only real fits.** Apply to as many jobs as possible, but only ones you could
    actually do and accept (right title, right level, right pay, right visa situation). Ten good
    applications beat a hundred random ones, and a wrong application can hurt you at that company.
@@ -156,8 +159,9 @@ The short version, so you know why the rules below look the way they do:
    look at, and Muse moves on to the next job.
 7. **Reach a human too.** When a posting names a recruiter or hiring manager, Muse sends them a
    short LinkedIn connection note.
-8. **Automate the boring parts.** Approvals, verification codes and verification links are handled
-   by tools (see the README), so the whole thing runs while you sleep.
+8. **Automate the boring parts.** Verification codes are read from your inbox and entered promptly;
+   verification links are waited on, or tapped by you when only you can open them (see Part 6),
+   so the whole thing runs while you sleep.
 9. **Keep score.** Muse reports what it applied to, what got confirmed, and what's stuck, so you
    always know where things stand.
 
@@ -178,26 +182,29 @@ The short version, so you know why the rules below look the way they do:
 
 # Part 1 — System overview
 
-## 1.1 The three tracks
+## 1.1 The four tracks
 
-- **Track A — LinkedIn sourcing.** Finds fresh matching jobs on LinkedIn, then applies on the
+- **T1 — LinkedIn sourcing.** Finds fresh matching jobs on LinkedIn, then applies on the
   employer's own website. LinkedIn is sourcing only — never submit through LinkedIn's own
-  quick-apply flow (see Part 7 for the one narrow exception). Track A runs as a single LinkedIn
+  quick-apply flow (see Part 7 for the one narrow exception). T1 runs as a single LinkedIn
   session window, because one session avoids account flags; its company-site submissions run as
-  separate windows, like Track B.
-- **Track B — Company websites.** Searches and applies directly on company career sites and
-  applicant-tracking systems (ATS): Greenhouse, Ashby, Lever, Workday, iCIMS, SmartRecruiters,
+  tabs inside that window.
+- **T2 — LinkedIn, remote-only.** Same as T1 with the remote filter on. Overlap with T1 is a
+  duplicate — discard silently.
+- **T3 — Big companies.** Searches and applies directly on company career sites and
+  applicant-tracking systems (ATS): Greenhouse, Ashby, Lever, Workday, SmartRecruiters,
   Rippling, Workable, Comeet, JazzHR, and company-owned forms.
-- **Track C — Industry focus (optional).** Same mechanics as Track B, restricted to the industry
+- **T4 — Fintech and banks.** Same mechanics as T3, restricted to the industry
   in `[TARGET_INDUSTRIES]` (the author uses fintech & banks: payments, lending, trading, crypto,
-  banks). Skip this track if `[TARGET_INDUSTRIES]` is "any".
+  banks), worked in this order: quant first, then fintech, then banks. Skip this track if
+  `[TARGET_INDUSTRIES]` is "any".
 
-All three tracks share **one ranked queue** (not three separate queues that can duplicate work or
-dispatch out of order) and one log + one spreadsheet.
+All four tracks share **one ranked queue** (not separate queues that can duplicate work or
+  dispatch out of order) and one log + one spreadsheet.
 
 ## 1.2 Pass rhythm
 
-- Passes run **every 5 minutes** on all three tracks. A pass is a worker that does, in order:
+- Passes run **every 5 minutes** on all four tracks. A pass is a worker that does, in order:
   1. a serial dedupe gate (Part 10),
   2. inbox triage (Part 8),
   3. fresh sourcing (Part 3),
@@ -231,7 +238,7 @@ dispatch out of order) and one log + one spreadsheet.
 ## 1.4 The 1-hour hard rule (file-and-remove lifecycle)
 
 - **If the final submission step is not reached within 1 hour of dispatch, the item is a FAILURE.**
-  No extension for progress alone. It is filed in a blocked-backlog file for your review and is
+  No extra time for progress alone. It is filed in a blocked-backlog file for your review and is
   **not** redispatched. Filed items return only on your explicit call.
 - Inside the hour: still making progress → keep going; stuck ~20 minutes with a plausible path →
   one 15-minute grace; still stuck at the end of grace or at 1 hour, whichever comes first →
@@ -250,12 +257,13 @@ dispatch out of order) and one log + one spreadsheet.
 
 - **Close a tab immediately after its submission is confirmed and recorded**, before starting the
   next application in the same window. Never leave a submitted tab open, and never re-scan a
-  counted tab. This applies to every track and every window, including multi-tab Track A windows.
+  counted tab. This applies to every track and every window, including multi-tab T1 windows.
 - "Recorded" for a browser window means the confirmation artifact is captured and included in the
   window's report (the pass worker writes the spreadsheet/log rows from that report) — the window
   does not wait for the spreadsheet write before closing the tab.
 - Scope is confirmed submissions only. Tabs that are not submitted stay open: upload-card waiting
-  tabs, CAPTCHA-left-open forms, and in-progress forms are NOT closed by this rule.
+  tabs and in-progress forms are NOT closed by this rule. Presented-verification forms are the
+  exception — under Part 4.4 they are recorded, logged as failed, and closed immediately.
 - Window closure at batch end still applies; this rule adds per-tab closure inside the window.
 
 ---
@@ -286,7 +294,8 @@ dispatch out of order) and one log + one spreadsheet.
 2. **Level:** matches `[TARGET_LEVELS]`. **Skip any job whose title contains a word from
    `[SKIP_KEYWORDS]`.** Also skip a job whose description is clearly above or below your level even
    if the title looks fine. Unclear level = judge from the description; still unclear = skip.
-   (Author's example: mid-level through Senior, never Staff, Principal or above.)
+   Never Staff, Senior Staff, Principal, or anything above Staff; a Senior-titled role that is
+   really staff-scope is out. (Author's example: mid-level through Senior.)
 3. **Years required:** at most `[MAX_YEARS_REQUIRED]` years = go. A little more = deprioritized
    (a few may be tried). Far more = skip. `[MUST_HAVE_KEYWORDS]` appearing in the description is a
    good sign of fit; missing all of them is a reason to skip.
@@ -305,24 +314,28 @@ dispatch out of order) and one log + one spreadsheet.
 9. **Exclusions:** everything on `[YOUR_DO_NOT_APPLY_LIST]` (rejected requisitions, companies that
    excluded you, any role you were referred to through a channel that forbids a second submission).
    Never double-submit a role that is already logged as applied.
+10. **Stack:** skip a role whose required or primary stack is Android, Swift/iOS, .NET, Ruby, Go,
+    or C++. Generalist roles are judged on their primary stack.
+11. **Title words:** skip any title containing lead, intern, graduate, new grad, or new
+    graduate, in addition to `[SKIP_KEYWORDS]`.
+12. **Systems:** iCIMS is skipped entirely, on every track.
 
 ## 3.2 Sourcing window
 
-- **Primary: roles added in the last 12 hours only.**
-- **Fallback:** if every fitting 12-hour role has been applied to (or verified as duplicate / skipped
-  for a fit reason), expand to roles added in the last 24 hours, in the same pass.
-- **Hard stop: never go before 24 hours for new sourcing**, unless you explicitly revive an item.
-- "Added" = the posting's posted time when reliable. When posted time is missing or looks like a
-  repost, "added" = first-seen time by the loop. Pass briefs log BOTH times. Queued roles keep
-  their first-seen time; roles nearing 24 hours are bumped to the front of the queue.
-- A role first seen inside 24 hours but queued past 24 hours because the browser backlog blocked
+- **LinkedIn (T1/T2) — a ladder, not a single window:** 12 hours, then 24, then 36, then 48.
+  **48 hours is the hard limit.** A repost counts as new, and repost time counts as freshness time.
+- **Company sites (T3/T4) — no date gate:** if a posting is live and passes every other gate,
+  apply regardless of age, working newest first (using the site's own sort when it offers one).
+- "Added" = the posting's posted time when reliable. When a posting hides its posted date,
+  "added" = first-seen time by the loop. Pass briefs log BOTH times. Queued roles keep
+  their first-seen time.
+- A role first seen inside its window but queued past it because the browser backlog blocked
   dispatch does NOT automatically become ineligible — flag it in the diagnosis table, never
   silently drop it.
 - Deadline items are NOT a back door to old postings. A deadline role is worked only if it is
-  already dispatched/filed and you call it, or if its posting itself is within 24 hours.
-- **These windows are tunable.** 12h/24h is strict: on a slow day, or once every fresh fit is
-  applied, sourcing finds nothing and applying stops. If a day yields no new work, widen them
-  (e.g. 24h primary, 72h fallback) and update the same numbers in Part 7.1 and Part 13.1.
+  already dispatched/filed and you call it, or if its posting itself is within its window.
+- **These windows are tunable.** If a day yields no new work, widen them and update the same
+  numbers in Part 7.1 and Part 13.1.
 
 ## 3.3 Startup cap and contractor hold
 
@@ -337,8 +350,7 @@ dispatch out of order) and one log + one spreadsheet.
 
 ## 3.4 Per-company cap
 
-- Shared across all tracks, per calendar day: **10 applications to one company** for companies with
-  postings fresh within 24 hours, **5 per day otherwise**.
+- Shared across all tracks, per calendar day: **5 applications to one company, flat.**
 
 ## 3.5 Prioritization inside every pass
 
@@ -462,16 +474,33 @@ opposite things, and getting them confused has caused real errors:
   passport country) or skill-year numbers, and it does not retire the work-auth rules above.
   Never ask the applicant about work schedule again once this is set.
 - **Prior employment at the company** = No (unless true); **over 18** = Yes; **how did you hear
-  about us** = "Online job board"; **restrictive covenants** = No.
+  about us** = the first listed option, always — never park on this field;
+  **restrictive covenants** = No.
 - **Salary answers:** the posted range's midpoint when a range is posted, otherwise your configured
   target (this system uses "$130,000+ base" style answers — set your own). Sponsorship free text is
   always `[YOUR_SPONSORSHIP_TEXT]`.
+- **Agreement checkboxes:** any checkbox agreeing to a user agreement or privacy policy is always
+  checked Yes — an agreement blocker is never a reason to stop.
+- **Profile build/update prompts:** when a site asks you to build or update your profile, fill it
+  from your profile facts. Only a field needing a personal fact outside your profile stays for
+  you.
+- **Signature fields:** your full name plus today's date — a date picker picks today and confirms.
+- **Email codes:** check the inbox first, then the email text.
+- **Single-select schedule fields are NOT covered by blanket Yes:** when a form makes you pick
+  exactly ONE of onsite / hybrid / remote, that pick stays for you — blanket Yes does not resolve
+  it.
 
-## 4.4 CAPTCHAs and blocked steps
+## 4.4 Presented verification challenges — exit immediately
 
-- **CAPTCHA: TRY to solve it.** If the attempt fails, leave the completed form in place, log it as
-  "CAPTCHA — needs you to finish", and flag it prominently in the pass summary so you can complete
-  it in the browser — do not discard the application.
+- **If a site presents a slider puzzle, a click challenge, or any similar presented verification:
+  exit immediately.** Do not attempt it, do not grind it, do not park on it.
+- In order: (1) record it first; (2) remove it from the running tasks; (3) log it in the failed
+  tasks with the reason (the verification type, e.g. Slider / CAPTCHA) AND the URL (entry URL +
+  latest URL); (4) close the tab immediately.
+- Failed-verification items stay logged for you to revive yourself later. The loop never
+  re-attempts them on its own. Forms parked under the old try-and-leave-open rule get this same
+  treatment the next time a pass touches them.
+- This covers presented challenges only — not verification links or codes, which follow Part 6.
 - On an unpassable login wall or a step needing your personal decision: log Skipped with the
   reason and move on.
 - Respect site rate limits. If a site blocks automated access, stop that source for the day and
@@ -534,6 +563,13 @@ and the assistant only ever learns whether a sign-in worked.
   saved login. What you must NOT do is invent passwords on the fly or store them in files.
 - **Credential reuse is a settled choice, not a recurring question.** Once you pick the pattern,
   the loop does not re-raise it.
+- **Sign-in order.** When a sign-in page offers signing in with Google, take it and pick the
+  already-signed-in account — one tap, never a typed password. If the account chooser does not
+  list your account, stop and report it for manual sign-in: a password screen appearing after a
+  Google sign-in click is itself evidence the session is not visible — never push through it.
+  Otherwise sign in with email, never a mobile-number tab: try creating the account first with
+  your application email and your usual password; if the email already exists, use the
+  reset-password flow (Part 6.7) and continue. Never invent a password.
 
 ## 6.2 How to add a website login (the secure entry flow)
 
@@ -600,6 +636,8 @@ and the assistant only ever learns whether a sign-in worked.
 - **A code you send in chat goes to the browser as text** for the sign-in step that is waiting
   on it. A code from a connected inbox is shared with the browser only after you approve it on
   its card.
+- **A code that does not work ends that attempt.** No guessing loop, no hour-wait cycle for codes
+  — that waiting cycle belongs to links, not codes (see 6.7).
 
 ## 6.7 Verification links (tap-only links are different from codes)
 
@@ -624,6 +662,9 @@ and the assistant only ever learns whether a sign-in worked.
   auto-click.
 - **Separate the two:** codes are typed in by a window; links are tapped by you (or your
   auto-click). They are counted and handled separately, never merged.
+- **Links are never failed for not being obtained or clicked.** Wait for the link, click it when
+  it arrives, and resume after. If a link expires too fast to use, request a fresh one and use
+  that instead.
 
 ## 6.8 What never happens with credentials
 
@@ -751,6 +792,8 @@ flag anything needing your own response in the next report.
 - **Reporting:** whenever you ask about essay questions, the report carries the FULL submitted
   answer/essay with each question, not the question alone. The 10 PM daily report includes a FULL
   essay appendix: every essay question logged so far plus the answer submitted for it.
+- **Revision pass:** before submitting, an essay draft is revised toward a human, formal tone, and
+  the FINAL revised text is what gets logged verbatim — never the pre-revision draft.
 
 ## 9.2 AI-identity rule (top rule — overrides other answer rules where they conflict on identity)
 
@@ -813,6 +856,9 @@ Dedupe happens SERIALLY, done by the pass worker BEFORE dispatching any browser 
 5. Same company + different requisition is fine; the same requisition twice is never fine.
 6. Never run two windows on the same company's careers site at the same time, and never put the
    same company in two windows in one pass.
+7. Check role, board, and URL — not the company string alone. A role filed under a parent or
+   brand name (or a redirect board) is missed by company-string matching, so a candidate that
+   looks new can be an already-applied requisition.
 
 ## 10.4 Totals verification (before any total is relayed)
 
@@ -939,7 +985,7 @@ A removal missing all four is flagged "evidence missing" and surfaced in the nex
 - "Window reports after the batch is done" is NOT your report: the window's batch-end report is
   an internal handoff; YOUR report is per individual job, delivered as each job's outcome is
   known, and never aggregated to the batch.
-- This matters most for Track A: one LinkedIn session window can hold many companies over its
+- This matters most for T1: one LinkedIn session window can hold many companies over its
   life (one observed window held LinkedIn + Greenhouse + Workday + iCIMS tabs; another held 10+
   tabs). A window report that waits for the whole window to finish hides every job inside it
   until the end — which is why per-job immediate reporting is mandatory, and why windows must
@@ -948,10 +994,10 @@ A removal missing all four is flagged "evidence missing" and surfaced in the nex
 
 ## 11.6 Batch sizes, as they actually run
 
-- **Track B:** usually ONE company per window, up to 3 fitting roles for that company.
-- **Track C:** usually ONE company per window, sometimes TWO paired companies in one window.
-- **Track A:** the exception — ONE LinkedIn session window, with company-site submissions as
-  tabs inside it, worked serially tab by tab. One Track A window can therefore hold many
+- **T3:** usually ONE company per window, up to 3 fitting roles for that company.
+- **T4:** usually ONE company per window, sometimes TWO paired companies in one window.
+- **T1:** the exception — ONE LinkedIn session window, with company-site submissions as
+  tabs inside it, worked serially tab by tab. One T1 window can therefore hold many
   companies over its life.
 
 ## 11.7 Per-item reason logging
@@ -1044,7 +1090,7 @@ Counts first, aggregated across tracks (never per-track), in one very small tabl
      template; the stuck-items table is the report.
    - Job lists in reports are TABLES with columns (Company, Track, Since, State, Why stuck,
      Push-through), not bullets. Stuck tables use ONE single table grouped by track, with a
-     Track A / Track B / Track C separator row between groups, never separate tables per track.
+     T1 / T3 / T4 separator row between groups, never separate tables per track.
 4. **Insight, short:** what problems appeared today, which are old, which are new, what strategy
    is already in place against the old ones, and what (if anything) needs your decision for a
    new one.
@@ -1111,10 +1157,27 @@ Keep a living playbook file with:
   behavior).
 - **§4 — Maintenance:** new patterns and new company mechanics get appended the same pass they
   are discovered.
-- Honest limit: browser windows cannot inject a script into an ATS page. A pre-matched answer
-  packet plus a fixed step order is the working version of that idea — windows drive the UI only.
+- Honest limit: the agent works from text instructions only. A pre-matched answer list plus a
+  fixed step order is the method — windows drive the UI only, and nothing is injected into a page.
 - Every pass reads the playbook first (with the rules + answer file) and passes the matched ATS
   block + question patterns INLINE to each browser window.
+- **Fill rhythm — fast, like a person.** One field at a time: click the field, type, click away,
+  pause briefly. Choices one at a time with the same pause. A field counts only when the control
+  reports the value — a value that merely shows on screen is not committed.
+- **Typeahead lists:** type, then click a real suggestion. Typing alone leaves the field empty on
+  submit on several platforms. For a location list, click the first suggestion. For an education
+  list: click the box, type, pick the match, click a neutral area, verify the selected token.
+- **Attachments:** an attachment counts only when the page shows the filename. On a multi-page
+  form, attach the resume again on each new page.
+- **Free text:** strip `< > [ ] " { } \` before typing — they break fields on some platforms.
+  This applies to essays and descriptions too.
+- **Workday-style forms:** prefer the resume-autofill link when the posting offers it. Skip the
+  skills section entirely when it is optional. Never touch a Websites section. Degree pickers are
+  matched by synonyms. Required languages: English, fluent.
+- **Submit when complete, retry once.** Before submitting, check the whole page: every required
+  field filled, every choice reporting its value, every attachment showing its filename.
+- **Stuck page:** if one page shows no change for a few minutes, a human takes that page by
+  hand and the rhythm resumes on the next page.
 
 ## 13.3 File layout (adapt paths to your setup)
 

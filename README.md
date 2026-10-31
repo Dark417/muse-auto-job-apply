@@ -4,120 +4,90 @@
 
 让 **Muse**（https://muse.ai 上的 AI 助手）24 小时帮你投简历。
 
-**任何专业都能用**，不只是程序员：你告诉 Muse 要找什么职位名称、什么级别、哪些关键词。
+**任何专业都能用**，不只是程序员：你告诉 Muse 要找什么职位名称、什么级别、哪些关键词要过滤掉。
 
-你只需要做 **3 件事**：
+**你只需要做两件事：**
 
-1. **设置 Muse**：给它说明书文件、你的个人信息、简历和求职信。
-2. 等 Muse 开始请你点 **Allow** 的时候，**安装这个页面上的 Chrome 插件**。
-3. **打开插件**，让 Muse 一直开着。就这样。
+1. **设置一次 Muse**：填好说明书文件，上传简历。
+2. **让它一直跑**，只处理它交给你、只有你能做的事（点验证链接、做拿不准的选择）。
 
 ---
 
-## 第 1 步：设置 Muse 帮你投简历
+## 这套东西是怎么想的（大意）
 
-**准备好：**
-- **简历** PDF。
-- **求职信（cover letter）** PDF（可选）。
-- 一个**只用来求职的 Gmail**。最好新建一个，这样求职邮件不会和私人邮件混在一起。
+细节全在 [muse-prompt.md](muse-prompt.md) 里。这里是大意，和最需要注意的几点：
 
-**照着做：**
-
-1. 打开说明书文件：**[muse-prompt.md](muse-prompt.md)**。
-2. 下载它：点文件右上角的**下载按钮**（向下的箭头 ⬇）。
-3. 打开下载好的文件：
-   - **Windows：** 右键 → **打开方式** → **记事本**。
-   - **Mac：** 右键 → **打开方式** → **文本编辑**。
-4. 在文件最上面的 **✏️ STEP 1: FILL IN YOUR INFORMATION HERE** 下面有两个框。把每一个 **`____`** 换成你自己的信息：
-   - **Box A：关于你。** 姓名、邮箱、电话、学历、工作年限、签证情况等。
-   - **Box B：投什么工作。** 想投的职位名称、备选职位名称、级别，以及**过滤词**：职位名称里带这些词的，一律跳过。比如：
-     ```
-     [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
-     [BACKUP_TITLES]  = Reporting Analyst, Operations Analyst
-     [TARGET_LEVELS]  = junior, mid-level
-     [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
-     ```
-     - 有几年经验？过滤掉 `principal, staff, director, intern, internship, new grad`。
-     - 学生或应届生？过滤掉 `senior, staff, principal, lead, manager`。
-
-     Box B 下面有**现成的例子**：程序员、应届生、数据分析、市场营销、机械工程、实习。挑一个最接近你的，复制过来再改。
-
-   只需要填这两个框，文件里别的地方都不用改。
-5. **保存**文件。
-6. 打开 **https://muse.ai** 并登录，开一个**新对话**。
-7. 上传 **3 个文件**：填好的 `muse-prompt.md`、简历 PDF、求职信 PDF。
-8. 复制下面这段话发给 Muse：
-   > Read muse-prompt.md. These are your rules for applying to jobs for me. My resume and cover letter are attached. Set up the scheduled job-application tasks described in Part 1, then walk me through the setup checklist in Part 6.9.
-9. Muse 会请你**连接求职 Gmail**、**保存各个招聘网站的登录信息**。按它说的做就行。
-
-> 🔒 不要在聊天里输入密码。需要密码时，Muse 会弹出一个安全的输入框。
-
-### Muse 的投递思路
-
-`muse-prompt.md` 是作者自己用的投递策略。简单说：
-
-- **先投最新的职位。** 职位发布后几小时内就投，这时候招聘的人还在认真看申请。
+- **先投最新的职位。** LinkedIn 上的职位按 12 → 24 → 36 → 48 小时一层层找，48 小时是上限；公司官网上的职位没有时间限制，按最新到最旧投。
 - **投得多，但只投真正合适的。** 职位名称、级别、薪资、签证情况都要对得上，不乱投。
 - **在公司官网投递。** LinkedIn 只用来找职位，不用 "Easy Apply"。
 - **不编、不猜。** 不知道怎么回答的问题，会停下来问你。
-- **不重复投。** 所有申请都记在一个表格里，投之前先查。
+- **不重复投。** 所有申请都记在一个表格里，投之前先查，同一个职位（公司 + 职位 + 编号）绝不投两次。
 - **不卡住。** 一个申请超过 1 小时还没完成，就先放一边，接着投下一个。
+- **验证题直接退出。** 网站弹出滑块、点选验证之类的，直接退出、记下来、关掉标签页，不硬闯、不重试。
+- **登录墙不是失败。** 需要注册账号、收验证码、点验证链接，都是正常步骤，不是失败原因。
 - **主动联系人。** 职位上写了招聘负责人的，会在 LinkedIn 上发一条简短的加好友留言。
 
 完整版在 `muse-prompt.md` 开头的 "How this system thinks" 部分。
 
 ---
 
-## 第 2 步：出现 "Allow" 按钮时，安装 Chrome 插件
+## 设置步骤（照着做）
 
-Muse 开始投简历以后，**每次上传简历前都会停下来**，等你点一个蓝色的 **Allow** 或 **Allow once** 按钮。这些按钮在这里：
+**准备好：**
 
-**muse.ai → 右侧面板 → Approvals 标签（🛡 盾牌图标）→ "Needs review"**
+- **简历** PDF。
+- **求职信（cover letter）** PDF（可选）。
+- 一个**只用来求职的 Gmail**。最好新建一个，这样求职邮件不会和私人邮件混在一起。
 
-不用一整天守着点，装上这个插件，它会帮你点。
+**第 1 步：拿到说明书文件**
 
-**安装（只需一次，大约 2 分钟）：**
+1. 打开说明书文件：**[muse-prompt.md](muse-prompt.md)**。
+2. 下载它：点文件右上角的**下载按钮**（向下的箭头 ⬇）。
 
-1. 在这个 GitHub 页面上，点绿色的 **Code** 按钮 → **Download ZIP**。
-2. 解压：
-   - **Windows：** 右键 ZIP 文件 → **全部解压缩** → **解压缩**。
-   - **Mac：** 双击 ZIP 文件。
+**第 2 步：填两个框（最关键的一步）**
 
-   你会得到一个叫 **`muse-auto-job-apply-main`** 的文件夹。
-3. 打开 **Google Chrome**，在最上面的地址栏输入 **`chrome://extensions`**，按**回车**。
-4. 打开右上角的**开发者模式**开关。
-5. 点左上角的**加载已解压的扩展程序**。
-6. 打开 `muse-auto-job-apply-main` 文件夹，**单击一下**里面的 **`muse-auto-allow-chrome`** 文件夹，再点**选择**（或**打开**）。
-7. 扩展列表里出现 **Muse Auto Allow**，就装好了。✅
+3. 打开下载好的文件：
+   - **Windows：** 右键 → **打开方式** → **记事本**。
+   - **Mac：** 右键 → **打开方式** → **文本编辑**。
+4. 在文件最上面的 **✏️ STEP 1: FILL IN YOUR INFORMATION HERE** 下面有两个框。把每一个 **`____`** 换成你自己的信息。只需要填这两个框，文件里别的地方都不用改：
+   - **Box A：关于你。** 姓名、邮箱、电话、学历、工作年限、签证情况等。
+   - **Box B：投什么工作。** 关键词都在这里，填法如下：
+     - `[TARGET_TITLES]`：想投的职位名称，写好几个，用逗号分开。公司对同一个职位叫法不同，比如：
+       ```
+       [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
+       ```
+     - `[BACKUP_TITLES]`：备选职位名称，主力职位投完以后用，比如 `Reporting Analyst, Operations Analyst`。
+     - `[TARGET_LEVELS]`：级别，比如 `junior, mid-level` 或 `mid-level, senior`。
+     - `[SKIP_KEYWORDS]`：过滤词。职位名称里带这些词的，一律跳过。比如：
+       ```
+       [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
+       ```
+       - 有几年经验？过滤掉 `principal, staff, director, intern, internship, new grad, graduate, lead`。
+       - 学生或应届生？过滤掉 `senior, staff, principal, lead, manager`。
+     - `[MAX_YEARS_REQUIRED]`：职位要求年限超过这个数就跳过。可以比你真实年限写高一点（比如你有 3 年，写 5）。
+     - `[MUST_HAVE_KEYWORDS]`：好职位通常会提到的词，比如 `Python, SQL`；没有就写 `none`。
+     - `[TARGET_LOCATIONS]`：想去的地方，比如 `anywhere in the US`、`remote only`、`Bay Area, Seattle`。
+     - `[YOUR_COMP_FLOOR]`：最低年薪，比如 `$130k`；不确定就写 `any`。写太高会没职位可投。
+     - `[YOUR_DO_NOT_APPLY_LIST]`：永远不投的公司，没有就写 `none`。
 
-> 解压出来的文件夹之后不要删、也不要移动，Chrome 要从这个文件夹运行插件。
+     Box B 下面有**现成的例子**：程序员、应届生、数据分析、市场营销、机械工程、实习。挑一个最接近你的，复制过来再改。
 
----
+**第 3 步：把文件交给 Muse**
 
-## 第 3 步：打开插件，让 Muse 一直开着
+5. **保存**文件。
+6. 打开 **https://muse.ai** 并登录，开一个**新对话**。
+7. 上传 **3 个文件**：填好的 `muse-prompt.md`、简历 PDF、求职信 PDF。
+8. 复制下面这段话，**粘贴到对话里**发给 Muse：
+   > Read muse-prompt.md. These are your rules for applying to jobs for me. My resume and cover letter are attached. Set up the scheduled job-application tasks described in Part 1, then walk me through the setup checklist in Part 6.9.
+9. Muse 会请你**连接求职 Gmail**、**保存各个招聘网站的登录信息**。按它说的做就行。
 
-1. **固定插件：** 点 Chrome 右上角的**拼图图标 🧩** → 点 **Muse Auto Allow** 旁边的**图钉 📌**。插件图标就会出现在工具栏上。
-2. **打开插件：** 点 **Muse Auto Allow** 图标 → 确认 **Enabled** 是**勾上**的 ☑。
-3. **让 Muse 停在对的页面：** 在 **muse.ai** 标签页里，打开**右侧面板**，点 **Approvals** 标签（🛡 盾牌），能看到 **"Needs review"**。
-4. **测试一下：** 点插件图标 → **Run now**。正在等待的请求会被批准，下面的日志里会出现 `Allow pressed: …`。
-5. **放着不管。** 之后它每 2 分钟自动检查一次。
+> 🔒 不要在聊天里输入密码。需要密码时，Muse 会弹出一个安全的输入框。
 
-**它怎么点：**
-- 蓝色按钮写 **Allow** → 直接点 Allow。
-- 蓝色按钮写 **Allow once** → 打开旁边的小箭头 ⌄ 菜单，点 **Always allow**（永远允许），这个网站以后就不会再问了。
+**第 4 步：放着让它跑**
 
-**让它一直有效：**
-
-- ⚠️ **muse.ai 标签页必须一直停在 Approvals 页面。** 关掉右侧面板、切到面板里的其他标签（Activity、Upcoming、Identity），或者关掉 muse.ai 标签页，都会让它什么都点不到。打开别的 Chrome 标签页或窗口没关系。
-- **Chrome 要一直开着**，可以最小化。
-- **别让 Chrome 让这个标签页休眠：** 在地址栏输入 `chrome://settings/performance` → **始终让这些网站保持活动状态** → **添加** → 输入 `muse.ai` → **添加**。
-- **别让电脑睡眠：**
-  - **Windows：** 开始 → 设置 → 系统 → **电源** → "插入电源时，在此时间后使设备进入睡眠状态" → **从不**。
-  - **Mac：** 系统设置 → **电池** → 选项（笔记本）或 **节能**（台式机）→ 打开**显示器关闭时防止自动进入睡眠**。一直插着电。
-
-  屏幕可以黑屏、可以锁屏，只要电脑本身不睡眠就行。
-
-**就这样！** 🎉
+- Muse 会按短周期一直找职位、投递，你不用守着看。
+- 只有几件事需要你：点验证链接、做 Muse 拿不准的选择、回它的问题。其他时间不用管。
+- 想停就停：在 Muse 里暂停它的定时任务。
 
 ---
 
@@ -125,14 +95,10 @@ Muse 开始投简历以后，**每次上传简历前都会停下来**，等你�
 
 | 你看到的 | 怎么办 |
 |---|---|
-| "Needs review" 里的请求越积越多 | muse.ai 标签页还停在 **Approvals** 吗？**Enabled** 勾上了吗？电脑睡着了吗？ |
-| 插件日志写 `No muse.ai tab open` | 在 Chrome 里打开 https://muse.ai，标签页不要关。 |
-| 插件日志写 `sections 0` | muse.ai 标签页没停在 Approvals 页面。打开右侧面板 → Approvals，再点 **Run now**。 |
 | Muse 说找不到验证码 | 确认 Muse 连的是你的**求职** Gmail。如果网站是发短信，看下面的"把短信验证码转发到 Gmail"。 |
-| 一整天都没有新投递 | Muse 只找最新的职位（最近 12–24 小时）。跟 Muse 说放宽范围，比如 "look at jobs from the last 72 hours"（`muse-prompt.md` 第 3.2 节）。 |
-| 电脑重启以后 | 打开 Chrome，打开 muse.ai，回到 Approvals 页面。 |
+| 一整天都没有新投递 | Muse 只找最新的职位（LinkedIn 48 小时以内，公司官网按最新到最旧）。跟 Muse 说放宽范围，比如 "look at jobs from the last 72 hours"（`muse-prompt.md` 第 3.2 节）。 |
 
-**全部停止：** 在 Muse 里暂停它的定时任务；在 Chrome 里点插件图标，取消勾选 **Enabled**。
+**全部停止：** 在 Muse 里暂停它的定时任务。
 
 ---
 
@@ -171,29 +137,19 @@ Muse 开始投简历以后，**每次上传简历前都会停下来**，等你�
 </details>
 
 <details>
-<summary><b>在 Mac 上用 Muse 桌面应用（不用 Chrome）</b></summary>
-
-如果你在 Mac 上用的是 Muse **桌面应用**，不是 Chrome 里的 muse.ai，就用 [muse-auto-allow-mac/](muse-auto-allow-mac/) 里的 Mac 应用。它需要用终端，并给一次权限。按它的 [README](muse-auto-allow-mac/README.md) 做。
-</details>
-
-<details>
 <summary><b>仓库里有什么</b></summary>
 
-| 文件 / 文件夹 | 是什么 |
+| 文件 | 是什么 |
 |---|---|
-| [muse-prompt.md](muse-prompt.md) | 给 Muse 的说明书：怎么找职位、投递、从邮箱读验证码、做记录。 |
-| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | Chrome 插件（Windows 和 Mac）。[详细说明](muse-auto-allow-chrome/README.md)。 |
-| [muse-auto-allow-mac/](muse-auto-allow-mac/) | 同样功能的 Mac 应用，配 Muse 桌面应用用。 |
+| [muse-prompt.md](muse-prompt.md) | 给 Muse 的说明书：怎么找职位、投递、从邮箱读验证码、做记录。细节全在这里。 |
 | [claude-job-email-verifier.md](claude-job-email-verifier.md) | 可选的 Claude 任务说明，用来打开验证链接。 |
 
 ```mermaid
 flowchart LR
     subgraph MAC["你的电脑 · 一直开着"]
         direction TB
-        Allow["<b>Muse Auto Allow</b><br/>Chrome 插件或 Mac 应用"]
         Muse["<b>Muse</b><br/>找职位 &amp; 投递"]
         Claude["<b>Claude</b><br/>每小时定时任务（可选）"]
-        Allow -- "点上传请求的<br/>Allow" --> Muse
     end
 
     Jobs["<b>招聘网站</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]

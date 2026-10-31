@@ -4,120 +4,90 @@
 
 Let **Muse** (an AI assistant at https://muse.ai) apply to jobs for you, around the clock.
 
-**It works for any field**, not just software: you tell Muse which job titles, levels and keywords to look for.
+**It works for any field**, not just software: you tell Muse which job titles, levels and keywords to look for — and which keywords to filter out.
 
-You only need to do **3 things**:
+**You only need to do 2 things:**
 
-1. **Set up Muse** with the instructions file, your information, your resume and cover letter.
-2. When Muse starts asking you to click **Allow**, **install the Chrome extension** from this page.
-3. **Turn the extension on** and leave Muse open. That's it.
+1. **Set Muse up once**: fill in the instructions file and upload your resume.
+2. **Leave it running**, and handle only the few things only you can do (clicking verification links, making calls Muse isn't sure about).
 
 ---
 
-## Step 1: Set up Muse to apply for you
+## The general idea (and what to watch out for)
 
-**What you need:**
-- Your **resume** as a PDF.
-- Your **cover letter** as a PDF (optional).
-- A **Gmail used only for job applications**. Making a new one is best, so job emails don't mix with your personal mail.
+All the details live in [muse-prompt.md](muse-prompt.md). Here is the general idea, and the points that matter most:
 
-**Do this:**
-
-1. Open the instructions file: **[muse-prompt.md](muse-prompt.md)**.
-2. Download it: click the **download button** (the arrow ⬇ at the top right of the file).
-3. Open the downloaded file:
-   - **Windows:** right-click it → **Open with** → **Notepad**.
-   - **Mac:** right-click it → **Open With** → **TextEdit**.
-4. At the very top, under **✏️ STEP 1: FILL IN YOUR INFORMATION HERE**, there are two boxes. Replace every **`____`** with your own information:
-   - **Box A: About you.** Name, email, phone, degree, years of experience, visa status, etc.
-   - **Box B: What jobs to apply for.** The job titles you want, backup titles, your level, and **skip words**: any job whose title has one of these words is ignored. For example:
-     ```
-     [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
-     [BACKUP_TITLES]  = Reporting Analyst, Operations Analyst
-     [TARGET_LEVELS]  = junior, mid-level
-     [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
-     ```
-     - Experienced? Skip `principal, staff, director, intern, internship, new grad`.
-     - Student or new grad? Skip `senior, staff, principal, lead, manager`.
-
-     Right below box B there are **ready-made examples** for software engineers, new grads, analysts, marketing, mechanical engineers and interns. Copy the one closest to you and change it.
-
-   You only fill in these two boxes. You don't need to change anything else in the file.
-5. **Save** the file.
-6. Go to **https://muse.ai** and sign in. Start a **new chat**.
-7. Attach **3 files**: the filled-in `muse-prompt.md`, your resume PDF and your cover letter PDF.
-8. Paste this message and send it:
-   > Read muse-prompt.md. These are your rules for applying to jobs for me. My resume and cover letter are attached. Set up the scheduled job-application tasks described in Part 1, then walk me through the setup checklist in Part 6.9.
-9. Muse will ask you to **connect your job Gmail** and **save your logins** for job sites. Follow what it says.
-
-> 🔒 Never type a password into the chat. When Muse needs a password, it shows a secure form for it.
-
-### How Muse goes about it
-
-`muse-prompt.md` is the author's own playbook. In short:
-
-- **Fresh jobs first.** It applies within hours of a job being posted, when recruiters are still reading applications.
+- **Fresh jobs first.** LinkedIn jobs are worked in a ladder — 12, then 24, then 36, then 48 hours, with 48 hours as the hard limit. Company-site jobs have no date gate and are worked newest first.
 - **Lots of applications, but only real fits.** Right title, level, pay and visa situation. No random applying.
 - **Apply on the company's own website.** LinkedIn is only for finding jobs, not for "Easy Apply".
 - **Never lie, never guess.** If it doesn't know an answer, it asks you.
-- **Never apply twice.** Everything goes into one spreadsheet that's checked first.
+- **Never apply twice.** Everything goes into one spreadsheet that's checked first, and one job (company + role + requisition ID) never gets two applications.
 - **Don't get stuck.** An application that takes over an hour is set aside, and it moves on.
+- **Verification challenges mean exit.** If a site puts up a slider, a click challenge, or anything like that, the application ends on the spot: recorded, logged, tab closed. No grinding, no retrying.
+- **A login wall is not a failure.** Creating an account, getting a code, or clicking a verification link are normal steps, not reasons to fail.
 - **Reach a human.** It sends a short LinkedIn note to the recruiter when the posting names one.
 
 The full version is in "How this system thinks" near the top of `muse-prompt.md`.
 
 ---
 
-## Step 2: When "Allow" buttons appear, install the Chrome extension
+## Setup (follow these steps exactly)
 
-Once Muse starts applying, it **stops before every resume upload** and waits for you to click a blue **Allow** or **Allow once** button. You'll see them here:
+**What you need:**
 
-**muse.ai → right-hand panel → Approvals tab (🛡 shield icon) → "Needs review"**
+- Your **resume** as a PDF.
+- Your **cover letter** as a PDF (optional).
+- A **Gmail used only for job applications**. Making a new one is best, so job emails don't mix with your personal mail.
 
-Instead of clicking them yourself all day, install this extension. It clicks them for you.
+**Step 1: Get the instructions file**
 
-**Install it (one time, about 2 minutes):**
+1. Open the instructions file: **[muse-prompt.md](muse-prompt.md)**.
+2. Download it: click the **download button** (the arrow ⬇ at the top right of the file).
 
-1. On this GitHub page, click the green **Code** button → **Download ZIP**.
-2. Unzip it:
-   - **Windows:** right-click the ZIP → **Extract All** → **Extract**.
-   - **Mac:** double-click the ZIP.
+**Step 2: Fill in the two boxes (this is the important part)**
 
-   You now have a folder called **`muse-auto-job-apply-main`**.
-3. Open **Google Chrome**. In the address bar at the top, type **`chrome://extensions`** and press **Enter**.
-4. At the top right, turn on **Developer mode**.
-5. Click **Load unpacked** (top left).
-6. Open the `muse-auto-job-apply-main` folder, click the **`muse-auto-allow-chrome`** folder inside it **once**, then click **Select** (or **Open**).
-7. **Muse Auto Allow** now appears in the list of extensions. ✅
+3. Open the downloaded file:
+   - **Windows:** right-click it → **Open with** → **Notepad**.
+   - **Mac:** right-click it → **Open With** → **TextEdit**.
+4. At the very top, under **✏️ STEP 1: FILL IN YOUR INFORMATION HERE**, there are two boxes. Replace every **`____`** with your own information. You only fill in these two boxes. You don't need to change anything else in the file:
+   - **Box A: About you.** Name, email, phone, degree, years of experience, visa status, etc.
+   - **Box B: What jobs to apply for.** This is where the keywords go:
+     - `[TARGET_TITLES]`: the job titles you want, several of them, comma-separated. Companies name the same job differently, for example:
+       ```
+       [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
+       ```
+     - `[BACKUP_TITLES]`: backup titles to use when the main ones run out, for example `Reporting Analyst, Operations Analyst`.
+     - `[TARGET_LEVELS]`: seniority, for example `junior, mid-level` or `mid-level, senior`.
+     - `[SKIP_KEYWORDS]`: filter-out words. Any job whose title has one of these words is ignored. For example:
+       ```
+       [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
+       ```
+       - Experienced? Skip `principal, staff, director, intern, internship, new grad, graduate, lead`.
+       - Student or new grad? Skip `senior, staff, principal, lead, manager`.
+     - `[MAX_YEARS_REQUIRED]`: skip jobs asking for more years than this. You can set it a little above your real years (you have 3 → put 5).
+     - `[MUST_HAVE_KEYWORDS]`: words a good job usually mentions, for example `Python, SQL`; or `none`.
+     - `[TARGET_LOCATIONS]`: where you want to work, for example `anywhere in the US`, `remote only`, `Bay Area, Seattle`.
+     - `[YOUR_COMP_FLOOR]`: the lowest yearly salary you'll apply for, for example `$130k`; or `any` if you're not sure. A floor that's too high means fewer applications.
+     - `[YOUR_DO_NOT_APPLY_LIST]`: companies to never apply to, or `none`.
 
-> Don't delete or move the unzipped folder afterwards. Chrome runs the extension from it.
+     Right below box B there are **ready-made examples** for software engineers, new grads, analysts, marketing, mechanical engineers and interns. Copy the one closest to you and change it.
 
----
+**Step 3: Hand the file to Muse**
 
-## Step 3: Turn it on and leave Muse open
+5. **Save** the file.
+6. Go to **https://muse.ai** and sign in. Start a **new chat**.
+7. Attach **3 files**: the filled-in `muse-prompt.md`, your resume PDF and your cover letter PDF.
+8. **Paste this message into the chat** and send it:
+   > Read muse-prompt.md. These are your rules for applying to jobs for me. My resume and cover letter are attached. Set up the scheduled job-application tasks described in Part 1, then walk me through the setup checklist in Part 6.9.
+9. Muse will ask you to **connect your job Gmail** and **save your logins** for job sites. Follow what it says.
 
-1. **Pin the extension:** click the **puzzle piece 🧩** at the top right of Chrome → click the **pin 📌** next to **Muse Auto Allow**. Its icon now shows in the toolbar.
-2. **Turn it on:** click the **Muse Auto Allow** icon → make sure **Enabled** is **checked** ☑.
-3. **Put Muse on the right page:** in your **muse.ai** tab, open the **right-hand panel** and click the **Approvals** tab (🛡 shield). You should see **"Needs review"**.
-4. **Test it:** click the extension icon → **Run now**. Any waiting requests get approved, and the list below shows lines like `Allow pressed: …`.
-5. **Leave it.** From now on it checks every 2 minutes, by itself.
+> 🔒 Never type a password into the chat. When Muse needs a password, it shows a secure form for it.
 
-**How it clicks:**
-- Blue button says **Allow** → it clicks Allow.
-- Blue button says **Allow once** → it opens the small arrow ⌄ menu next to it and clicks **Always allow**, so that website doesn't ask again.
+**Step 4: Leave it running**
 
-**To keep it working:**
-
-- ⚠️ **Keep the muse.ai tab on the Approvals page.** If you close the panel, switch to another tab in the panel (Activity, Upcoming, Identity), or close the muse.ai tab, nothing gets clicked. Other Chrome tabs and windows are fine.
-- **Keep Chrome open.** It can be minimized.
-- **Stop Chrome from putting the tab to sleep:** type `chrome://settings/performance` in the address bar → **Always keep these sites active** → **Add** → type `muse.ai` → **Add**.
-- **Stop the computer from sleeping:**
-  - **Windows:** Start → Settings → System → **Power** → "When plugged in, put my device to sleep after" → **Never**.
-  - **Mac:** System Settings → **Battery** → Options (laptop) or **Energy** (desktop) → turn on **Prevent automatic sleeping when the display is off**. Keep it plugged in.
-
-  The screen can go dark or lock. Only the computer must stay awake.
-
-**That's it.** 🎉
+- Muse keeps finding jobs and applying on a short cycle. You don't need to watch it.
+- Only a few things need you: clicking verification links, making calls Muse isn't sure about, answering its questions. The rest runs itself.
+- To stop everything: in Muse, pause its scheduled tasks.
 
 ---
 
@@ -125,14 +95,10 @@ Instead of clicking them yourself all day, install this extension. It clicks the
 
 | What you see | What to do |
 |---|---|
-| Requests pile up in "Needs review" | Is the muse.ai tab still on the **Approvals** tab? Is **Enabled** checked? Is the computer awake? |
-| The extension list says `No muse.ai tab open` | Open https://muse.ai in Chrome and keep that tab open. |
-| The extension list says `sections 0` | The muse.ai tab isn't on the Approvals page. Open the right-hand panel → Approvals, then click **Run now**. |
 | Muse says it can't find a verification code | Make sure Muse is connected to your **job** Gmail. If the site texted the code, see "Forward text-message codes" below. |
-| No new applications for a whole day | Muse only looks at very new jobs (last 12–24 hours). Ask Muse to widen the window, e.g. "look at jobs from the last 72 hours" (Part 3.2 of `muse-prompt.md`). |
-| After restarting the computer | Open Chrome, open muse.ai, and go back to the Approvals page. |
+| No new applications for a whole day | Muse only looks at very new jobs (LinkedIn within 48 hours, company sites newest first). Ask Muse to widen the window, e.g. "look at jobs from the last 72 hours" (Part 3.2 of `muse-prompt.md`). |
 
-**Stop everything:** in Muse, pause its scheduled tasks. In Chrome, click the extension icon and uncheck **Enabled**.
+**Stop everything:** in Muse, pause its scheduled tasks.
 
 ---
 
@@ -171,29 +137,19 @@ Some sites text you a code. Muse can only read email, so your iPhone can forward
 </details>
 
 <details>
-<summary><b>Use the Muse desktop app on a Mac instead of Chrome</b></summary>
-
-If you use the Muse **desktop app** on a Mac instead of muse.ai in Chrome, use the Mac app in [muse-auto-allow-mac/](muse-auto-allow-mac/). It needs Terminal and a one-time permission. Follow its [README](muse-auto-allow-mac/README.md).
-</details>
-
-<details>
 <summary><b>What's in this repo</b></summary>
 
-| File / folder | What it is |
+| File | What it is |
 |---|---|
-| [muse-prompt.md](muse-prompt.md) | Instructions for Muse: how to find jobs, apply, read codes from email, and keep records. |
-| [muse-auto-allow-chrome/](muse-auto-allow-chrome/) | The Chrome extension (Windows and Mac). [More details](muse-auto-allow-chrome/README.md). |
-| [muse-auto-allow-mac/](muse-auto-allow-mac/) | The same thing as a Mac app, for the Muse desktop app. |
+| [muse-prompt.md](muse-prompt.md) | Instructions for Muse: how to find jobs, apply, read codes from email, and keep records. All the details live here. |
 | [claude-job-email-verifier.md](claude-job-email-verifier.md) | Instructions for the optional Claude task that opens verification links. |
 
 ```mermaid
 flowchart LR
     subgraph MAC["Your computer · always on"]
         direction TB
-        Allow["<b>Muse Auto Allow</b><br/>Chrome extension or Mac app"]
         Muse["<b>Muse</b><br/>sources &amp; applies"]
         Claude["<b>Claude</b><br/>hourly task (optional)"]
-        Allow -- "clicks Allow<br/>on uploads" --> Muse
     end
 
     Jobs["<b>Job sites</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
