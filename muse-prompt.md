@@ -3,34 +3,163 @@
 ## ✏️ STEP 1: FILL IN YOUR INFORMATION HERE
 
 **Replace every `____` below with your own information, then save the file.**
-You only need to fill in this box. Everywhere else in this file, words like `[YOUR_NAME]` are
-filled in automatically from this box. Leave lowercase ones like `[name]` or `[date]` alone:
-the assistant fills those in itself.
+You only need to fill in these two boxes. Everywhere else in this file, words like `[YOUR_NAME]`
+are filled in automatically from them. Leave lowercase ones like `[name]` or `[date]` alone: the
+assistant fills those in itself. Not sure what to write in box B? See the **examples** right after it.
+
+### Box A: About you
 
 ```text
 [YOUR_NAME]               = ____   (your full name, e.g. Jane Doe)
-[YOUR_JOB_TITLE]          = ____   (e.g. software engineer, data analyst, product designer)
+[YOUR_JOB_TITLE]          = ____   (how you describe yourself, e.g. software engineer, data analyst, nurse)
 [YOUR_APPLICATION_EMAIL]  = ____   (a Gmail used ONLY for job applications)
 [YOUR_PERSONAL_EMAIL]     = ____   (your personal email, or "same")
 [YOUR_PHONE]              = ____   (with country code, e.g. +1 555 123 4567)
 [YOUR_CITY_STATE]         = ____   (e.g. Seattle, WA)
 [YOUR_LINKEDIN_URL]       = ____   (e.g. https://www.linkedin.com/in/janedoe)
-[YOUR_GITHUB_URL]         = ____   (or "none")
+[YOUR_GITHUB_URL]         = ____   (or a portfolio link, or "none")
 [YOUR_RESUME_FILE]        = ____   (file name of your resume PDF, e.g. Jane_Doe_Resume.pdf)
 [YOUR_COVER_LETTER_FILE]  = ____   (file name of your cover letter PDF, or "none")
-[YOUR_WORK_AUTH_ANSWER]   = ____   (e.g. "US citizen", or "F-1 OPT, will need sponsorship later")
-[YOUR_SPONSORSHIP_TEXT]   = ____   (what to type when a form asks about visa sponsorship)
-[YOUR_CORE_STACK]         = ____   (your main skills, e.g. Python, SQL, React)
-[YOUR_BACKEND_YEARS]      = ____   (years of experience in your main field, e.g. 5)
-[YOUR_AI_YEARS]           = ____   (years of AI-related experience, or 0)
-[YOUR_DEGREE]             = ____   (e.g. MS Computer Science, University of Washington)
-[YOUR_COMP_FLOOR]         = ____   (lowest salary you'll apply for, e.g. $130k)
-[YOUR_COMP_FALLBACK]      = ____   (lower salary you accept when few jobs are left, e.g. $120k)
-[YOUR_DO_NOT_APPLY_LIST]  = ____   (companies to never apply to, or "none")
+[YOUR_DEGREE]             = ____   (e.g. BS Biology, University of Texas)
+[YOUR_YEARS_EXPERIENCE]   = ____   (years of work experience in your field, e.g. 0, 2, 5)
+[YOUR_AI_YEARS]           = ____   (years of AI-related experience, or "none")
+[YOUR_CORE_STACK]         = ____   (your main skills/tools, e.g. Python, SQL / Excel, Tableau / AutoCAD)
+[YOUR_WORK_AUTH_ANSWER]   = ____   (e.g. "US citizen", "green card", "F-1 OPT", "H-1B")
+[YOUR_NEEDS_SPONSORSHIP]  = ____   (yes or no: will you need visa sponsorship now or later?)
+[YOUR_SPONSORSHIP_TEXT]   = ____   (what to type in a free-text visa question, or "none")
+[YOUR_WILLING_TO_RELOCATE]= ____   (yes or no)
 ```
 
-> **Note to the assistant:** wherever this file says `[YOUR_…]`, use the value from the box above.
-> If a value is still `____`, ask the user for it before the first application.
+### Box B: What jobs to apply for
+
+```text
+[TARGET_TITLES]       = ____   (main job titles to search for, comma-separated)
+[BACKUP_TITLES]       = ____   (related titles to use when the main ones run out, or "none")
+[TARGET_LEVELS]       = ____   (e.g. "entry level, junior", "mid-level, senior", "internship")
+[MAX_YEARS_REQUIRED]  = ____   (skip jobs asking for more years than this, e.g. 2, 5, 8)
+[MUST_HAVE_KEYWORDS]  = ____   (words a good job usually mentions, e.g. Python, SQL; or "none")
+[SKIP_KEYWORDS]       = ____   (titles with these words are skipped, e.g. principal, staff, intern)
+[TARGET_LOCATIONS]    = ____   (e.g. "anywhere in the US", "remote only", "Bay Area, Seattle")
+[TARGET_INDUSTRIES]   = ____   (optional focus, e.g. fintech, healthcare, gaming; or "any")
+[YOUR_COMP_FLOOR]     = ____   (lowest yearly salary you'll apply for, e.g. $130k; or "any")
+[YOUR_COMP_FALLBACK]  = ____   (a lower floor for when jobs run out, e.g. $120k; or "same")
+[YOUR_DO_NOT_APPLY_LIST] = ____ (companies to never apply to, or "none")
+```
+
+**Tips for box B:**
+- **Titles:** put several. Companies name the same job differently, e.g.
+  `Data Analyst, Business Analyst, Reporting Analyst`. Put close-but-different jobs in
+  `[BACKUP_TITLES]` so Muse keeps applying when the main titles run out.
+- **Skip keywords** are the easiest way to stay at your level. Any job whose **title** contains
+  one of them is skipped:
+  - Experienced (3–8 years)? Skip the very senior and the very junior:
+    `principal, staff, director, head of, VP, intern, internship, new grad, entry level`
+  - Student or new graduate? Skip anything senior:
+    `senior, sr, staff, principal, lead, manager, director`
+  - Looking for an internship only? Skip full-time senior roles:
+    `senior, staff, principal, manager` and set `[TARGET_LEVELS] = internship`.
+- **Max years:** set it a little above your real years (e.g. you have 3 → put 5). Many
+  postings ask for more than they really need.
+- **Salary:** if you're not sure, write `any`. A floor that's too high means fewer applications.
+
+### Examples of box B for different people
+
+The author's own setup (software engineer, 5 years):
+```text
+[TARGET_TITLES]       = Software Engineer, Backend Engineer, Full Stack Engineer, AI Engineer
+[BACKUP_TITLES]       = Cloud Engineer, Data Engineer, Frontend Engineer, Platform Engineer
+[TARGET_LEVELS]       = mid-level, senior
+[MAX_YEARS_REQUIRED]  = 5
+[MUST_HAVE_KEYWORDS]  = Python, Java, AWS, APIs
+[SKIP_KEYWORDS]       = staff, principal, director, scientist, researcher, ML engineer, hardware, intern, internship, new grad
+[TARGET_LOCATIONS]    = anywhere in the US (most in California, Seattle, Texas, New York)
+[TARGET_INDUSTRIES]   = tech, fintech, banks
+[YOUR_COMP_FLOOR]     = $130k
+[YOUR_COMP_FALLBACK]  = $120k
+```
+
+New graduate in computer science:
+```text
+[TARGET_TITLES]       = Software Engineer I, Junior Software Engineer, New Grad Software Engineer
+[BACKUP_TITLES]       = Associate Software Engineer, QA Engineer, Support Engineer
+[TARGET_LEVELS]       = entry level, new grad, junior
+[MAX_YEARS_REQUIRED]  = 2
+[SKIP_KEYWORDS]       = senior, sr, staff, principal, lead, manager, intern
+[YOUR_COMP_FLOOR]     = any
+```
+
+Data / business analyst, 2 years:
+```text
+[TARGET_TITLES]       = Data Analyst, Business Analyst, Business Intelligence Analyst
+[BACKUP_TITLES]       = Reporting Analyst, Operations Analyst, Product Analyst
+[TARGET_LEVELS]       = junior, mid-level
+[MAX_YEARS_REQUIRED]  = 4
+[MUST_HAVE_KEYWORDS]  = SQL, Excel, Tableau, Power BI
+[SKIP_KEYWORDS]       = senior, staff, principal, manager, director, intern, scientist
+```
+
+Marketing, 4 years:
+```text
+[TARGET_TITLES]       = Marketing Manager, Digital Marketing Specialist, Growth Marketing Manager
+[BACKUP_TITLES]       = Content Marketing Manager, Social Media Manager, Marketing Coordinator
+[TARGET_LEVELS]       = mid-level
+[MAX_YEARS_REQUIRED]  = 6
+[SKIP_KEYWORDS]       = director, VP, head of, intern, internship, sales representative
+```
+
+Mechanical engineer, new graduate:
+```text
+[TARGET_TITLES]       = Mechanical Engineer, Design Engineer, Manufacturing Engineer
+[BACKUP_TITLES]       = Process Engineer, Quality Engineer, Test Engineer
+[TARGET_LEVELS]       = entry level
+[MAX_YEARS_REQUIRED]  = 2
+[MUST_HAVE_KEYWORDS]  = SolidWorks, CAD, GD&T
+[SKIP_KEYWORDS]       = senior, sr, staff, principal, lead, manager, software
+```
+
+Student looking for a summer internship:
+```text
+[TARGET_TITLES]       = Software Engineering Intern, Data Science Intern, Product Intern
+[BACKUP_TITLES]       = Technology Intern, IT Intern
+[TARGET_LEVELS]       = internship
+[MAX_YEARS_REQUIRED]  = 0
+[SKIP_KEYWORDS]       = senior, staff, principal, manager, full-time, new grad
+[YOUR_COMP_FLOOR]     = any
+```
+
+> **Note to the assistant:** wherever this file says `[YOUR_…]`, `[TARGET_…]`, `[BACKUP_TITLES]`,
+> `[MAX_YEARS_REQUIRED]`, `[MUST_HAVE_KEYWORDS]` or `[SKIP_KEYWORDS]`, use the value from boxes A and
+> B above (not from the examples). If a value is still `____`, ask the user for it before the first
+> application. Where a rule below mentions software roles, staff level or fintech, read it as the
+> author's example and apply the user's box B instead.
+
+---
+
+## How this system thinks (the strategy)
+
+The short version, so you know why the rules below look the way they do:
+
+1. **Fresh jobs first.** Apply within hours of a job being posted. Early applicants are the ones
+   recruiters actually read; a two-week-old posting is often already filled. That's why Muse only
+   looks at jobs from the last 12–24 hours.
+2. **Volume, but only real fits.** Apply to as many jobs as possible, but only ones you could
+   actually do and accept (right title, right level, right pay, right visa situation). Ten good
+   applications beat a hundred random ones, and a wrong application can hurt you at that company.
+3. **Apply on the company's own website.** LinkedIn is used to *find* jobs, not to apply.
+   Applications on the company's own site (Greenhouse, Workday, Lever, …) reach the real hiring
+   system; one-click "Easy Apply" mostly doesn't.
+4. **Never lie, never guess.** Every answer comes from your information. If Muse doesn't know an
+   answer, it stops and asks you instead of making one up.
+5. **Never apply twice.** Every application is logged in one spreadsheet and checked before
+   applying, so the same job never gets two applications.
+6. **Don't get stuck.** If one application takes more than an hour, it's set aside for you to
+   look at, and Muse moves on to the next job.
+7. **Reach a human too.** When a posting names a recruiter or hiring manager, Muse sends them a
+   short LinkedIn connection note.
+8. **Automate the boring parts.** Approvals, verification codes and verification links are handled
+   by tools (see the README), so the whole thing runs while you sleep.
+9. **Keep score.** Muse reports what it applied to, what got confirmed, and what's stuck, so you
+   always know where things stand.
 
 ## How to use this document
 
@@ -59,10 +188,9 @@ the assistant fills those in itself.
 - **Track B — Company websites.** Searches and applies directly on company career sites and
   applicant-tracking systems (ATS): Greenhouse, Ashby, Lever, Workday, iCIMS, SmartRecruiters,
   Rippling, Workable, Comeet, JazzHR, and company-owned forms.
-- **Track C — Fintech & banks (optional specialization).** Same mechanics as Track B, restricted
-  to one sector: payments, lending/credit, trading/investing, crypto/digital assets,
-  banking-as-a-service, financial infrastructure, and commercial/retail/investment banks.
-  Only use a sector track if that sector is a genuinely high-fit area for you.
+- **Track C — Industry focus (optional).** Same mechanics as Track B, restricted to the industry
+  in `[TARGET_INDUSTRIES]` (the author uses fintech & banks: payments, lending, trading, crypto,
+  banks). Skip this track if `[TARGET_INDUSTRIES]` is "any".
 
 All three tracks share **one ranked queue** (not three separate queues that can duplicate work or
 dispatch out of order) and one log + one spreadsheet.
@@ -152,26 +280,27 @@ dispatch out of order) and one log + one spreadsheet.
 
 ## 3.1 Fit filter (apply only if ALL pass)
 
-1. **Role type:** software / backend / AI engineer / full-stack / cloud / data / frontend.
-   Never scientist, researcher, ML engineer, or hardware roles.
-2. **Seniority:** mid-level through Senior only, **below Staff**. Excluded: Staff Engineer, Staff
-   SWE, Staff Software Engineer, Senior Staff, Staff Platform Engineer, or equivalent, plus
-   anything above Staff (Principal+ was already excluded). A Senior-titled role that is in fact
-   staff-scope is also excluded. Ambiguous titles are judged from posting scope; unclear scope =
-   skip. Lead is allowed only if lead = senior-level scope.
-   This rule is forward-looking only: already-submitted staff-level roles stand as history.
-3. **JD years:** 5 years or fewer required = go. 6+ years = deprioritized (a few may be tried).
-4. **Compensation:** posted salary (or top of the posted range) ≥ `[YOUR_COMP_FLOOR]` (this system
-   uses $130k). Floor `[YOUR_COMP_FALLBACK]` ($120k here) only when good roles run dry. No salary
-   posted → proceed on fit.
-5. **Sponsorship:** the posting must not exclude sponsorship. Explicit "no sponsorship", "no H-1B",
+1. **Role type:** the job title matches `[TARGET_TITLES]` (or `[BACKUP_TITLES]` once the main
+   titles run out). Close variations of the same job count (e.g. "Software Engineer II" for
+   "Software Engineer").
+2. **Level:** matches `[TARGET_LEVELS]`. **Skip any job whose title contains a word from
+   `[SKIP_KEYWORDS]`.** Also skip a job whose description is clearly above or below your level even
+   if the title looks fine. Unclear level = judge from the description; still unclear = skip.
+   (Author's example: mid-level through Senior, never Staff, Principal or above.)
+3. **Years required:** at most `[MAX_YEARS_REQUIRED]` years = go. A little more = deprioritized
+   (a few may be tried). Far more = skip. `[MUST_HAVE_KEYWORDS]` appearing in the description is a
+   good sign of fit; missing all of them is a reason to skip.
+4. **Compensation:** posted salary (or top of the posted range) ≥ `[YOUR_COMP_FLOOR]`. Use
+   `[YOUR_COMP_FALLBACK]` only when good roles run dry. No salary posted, or floor = "any" →
+   proceed on fit.
+5. **Sponsorship (only if `[YOUR_NEEDS_SPONSORSHIP]` = yes):** the posting must not exclude sponsorship. Explicit "no sponsorship", "no H-1B",
    "US citizens only", or "must be authorized without sponsorship" = skip.
-6. **Location:** anywhere in the US if you relocate. Sourcing mix (soft target): ~70% CA/Seattle,
-   ~25% TX/NY/NJ/AZ, ~5% elsewhere unless big tech / big pay.
-7. **Level mix for new applications (soft):** ~60% mid-level, ~30% lower-mid, ~10% senior where the
-   pool allows. In practice: apply all fitting mid-level roles when they exist; when they don't,
-   switch to senior — do not starve the loop waiting for mid-level.
-8. **Company mix for new applications (soft):** big tech first, then mid-size companies, then
+6. **Location:** matches `[TARGET_LOCATIONS]`. (Author's example: anywhere in the US, ~70%
+   California/Seattle, ~25% TX/NY/NJ/AZ, ~5% elsewhere.)
+7. **Level mix (soft):** mostly the main level in `[TARGET_LEVELS]`; when those run out, use the
+   neighboring level you listed rather than stopping. Do not starve the loop waiting for the
+   perfect level.
+8. **Company mix for new applications (soft):** big, well-known companies first, then mid-size companies, then
    strong-fit startups only under the cap below.
 9. **Exclusions:** everything on `[YOUR_DO_NOT_APPLY_LIST]` (rejected requisitions, companies that
    excluded you, any role you were referred to through a channel that forbids a second submission).
@@ -199,7 +328,7 @@ dispatch out of order) and one log + one spreadsheet.
 
 - **Startups: less than 8% of new applications.** Check both the day share and the rolling share
   since the cap was adopted; stop sourcing startups once either would reach 8% or above.
-  Priority order for new applications: big tech first, then mid-size, then startups only if strong
+  Priority order for new applications: big companies first, then mid-size, then startups only if strong
   fit and under the cap.
 - **Contractor roles: on hold for new dispatches.** Windows already in flight for a contractor role
   finish and report normally; filed contractor items stay filed. The hold lifts only on your
@@ -222,7 +351,7 @@ Work in this order:
   often already filled.
 - **P3. Sponsorship clarity.** Explicitly sponsorship-friendly postings rank above unknown; both
   rank above anything ambiguous.
-- **P4. Stack overlap.** Job descriptions whose CORE requirements match your strongest stack rank
+- **P4. Skill overlap.** Job descriptions whose CORE requirements match `[YOUR_CORE_STACK]` / `[MUST_HAVE_KEYWORDS]` rank
   highest. A JD whose primary skill you lack is a skip, not a stretch.
 - **P5. Direct beats aggregator.** The company's own posting over a repost of the same role.
 - **P6. Company heat.** Companies with several open matching requisitions or visible hiring
@@ -246,15 +375,15 @@ Work in this order:
 
 Work DOWN this ladder instead of ending the pass. Volume without loosening hard constraints:
 
-1. Fresh (≤24h) fits, ≤5-year JD, top of posted range ≥ `[YOUR_COMP_FLOOR]`.
-2. Fresh fits, ≤5-year JD, top of range ≥ `[YOUR_COMP_FALLBACK]`.
-3. Fresh fits, 6+-year JD, ≥ `[YOUR_COMP_FLOOR]` (deprioritized, not excluded).
+1. Fresh (≤24h) `[TARGET_TITLES]` fits, ≤ `[MAX_YEARS_REQUIRED]` years, top of posted range ≥ `[YOUR_COMP_FLOOR]`.
+2. Fresh fits, ≤ `[MAX_YEARS_REQUIRED]` years, top of range ≥ `[YOUR_COMP_FALLBACK]`.
+3. Fresh `[BACKUP_TITLES]` fits, and fits asking a little more than `[MAX_YEARS_REQUIRED]` years (deprioritized, not excluded).
 4. Strong-fit startups / contractor roles (only strong fits; contractor hold still applies unless lifted).
 5. Re-verify the parked queue for newly-unblocked items (a hold lifted, a login saved, a
    verification tapped).
 
 **NEVER loosened for volume:** sponsorship exclusions, the do-not-apply list,
-scientist/researcher/MLE/hardware exclusions, any company freeze you set, req-level dedupe, or the
+`[SKIP_KEYWORDS]`, any company freeze you set, req-level dedupe, or the
 work-authorization answers. A duplicate submission is worse than a missed lead.
 
 ## 3.8 Funnel measurement
@@ -304,12 +433,13 @@ Every pass reports funnel counts so the leak stage is visible instead of guessed
 This is the highest-stakes answer block in the system. Two phrasings that look alike mean
 opposite things, and getting them confused has caused real errors:
 
-- Plain **"Are you authorized to work in the United States?"** → answer with your plain
-  authorization status (in the original setup: **Yes**, on a valid work visa).
+- Plain **"Are you authorized to work in the United States?"** → answer from
+  `[YOUR_WORK_AUTH_ANSWER]` (in the author's setup: **Yes**, on a valid work visa).
 - Any phrasing containing **"without sponsorship", "without restriction", "for any employer",
-  "unrestricted", or "will you now or in the future require sponsorship"** → answer on the
-  sponsorship side: require sponsorship now = **Yes** and in the future = **Yes**; an "authorized
-  without sponsorship" question → **No** (a transfer is needed).
+  "unrestricted", or "will you now or in the future require sponsorship"** → answer from
+  `[YOUR_NEEDS_SPONSORSHIP]`. If it is **yes**: require sponsorship = **Yes**; "authorized without
+  sponsorship" = **No**. If it is **no**: require sponsorship = **No**; "authorized without
+  sponsorship" = **Yes**.
 - Free-text sponsorship field → type exactly: `[YOUR_SPONSORSHIP_TEXT]`.
 - Never conflate the two variants. If a form's wording is ambiguous, park it and ask — do not guess.
 
@@ -317,16 +447,17 @@ opposite things, and getting them confused has caused real errors:
 
 - **Application email:** `[YOUR_APPLICATION_EMAIL]` on every company-site application.
 - **Single-city location field:** `[YOUR_CITY_STATE]`.
-- **"Are you located in [city]?"** → **Yes** (you will relocate; if the employer doesn't sponsor
-  relocation, you pay out of pocket; you will attend online or onsite interviews).
-- **Experience numbers:** AI-related = `[YOUR_AI_YEARS]` years; backend/core stack =
-  `[YOUR_BACKEND_YEARS]` years. Specific skill-year numbers always come from your profile — never
+- **"Are you located in [city]?"** → if `[YOUR_WILLING_TO_RELOCATE]` = yes: **Yes** (you will
+  relocate at your own cost if needed and attend online or onsite interviews). If no: answer
+  truthfully from `[YOUR_CITY_STATE]`.
+- **Experience numbers:** in your field = `[YOUR_YEARS_EXPERIENCE]` years; AI-related =
+  `[YOUR_AI_YEARS]` years (if "none", answer 0 only when required). Specific skill-year numbers always come from your profile — never
   invented.
 - **Education on applications:** only `[YOUR_DEGREE]`. Do not add other degrees or schools.
 - **Identity/EEO questions:** OPTIONAL → skip. REQUIRED → your truthful answers
   (gender, race/ethnicity, veteran status, disability status) from your answer file.
 - **Blanket YES (eligibility only):** any work schedule (remote, hybrid, on-site) = Yes; relocation
-  = Yes; travel = Yes; accept any rules/policies = Yes; general experience/ability questions = Yes.
+  = `[YOUR_WILLING_TO_RELOCATE]`; travel = Yes; accept any rules/policies = Yes; general experience/ability questions = Yes.
   This covers yes/no eligibility questions only — it does NOT cover factual answers (citizenship,
   passport country) or skill-year numbers, and it does not retire the work-auth rules above.
   Never ask the applicant about work schedule again once this is set.
@@ -549,8 +680,8 @@ and the assistant only ever learns whether a sign-in worked.
 - **Note length: LinkedIn caps connection notes at 300 characters.** The full template will not
   fit — trim the phone/GitHub line first. Short template (adapt to your own details):
 
-> "Hello [name], I'm [YOUR_NAME], a [YOUR_JOB_TITLE] with [YOUR_BACKEND_YEARS]+ years of
-> experience building backend apps and AI agents ([YOUR_CORE_STACK]). I see you're hiring a
+> "Hello [name], I'm [YOUR_NAME], a [YOUR_JOB_TITLE] with [YOUR_YEARS_EXPERIENCE]+ years of
+> experience with [YOUR_CORE_STACK]. I see you're hiring a
 > [role] — I'm very interested and would love to connect. My email: [YOUR_APPLICATION_EMAIL].
 > Best, [YOUR_NAME]"
 
@@ -643,10 +774,9 @@ Five tabs; each application lives in exactly ONE of them:
 
 - **1summary** — cumulative totals + per-tab breakdown. No application rows. Totals cells and the
   breakdown must agree (see 10.4).
-- **2tech** — full-time applications at product tech companies (default tab).
-- **3fin-bank** — full-time applications at fintech + banks (payments, lending/credit,
-  trading/investing, crypto/digital assets, banking-as-a-service, financial infrastructure,
-  commercial/retail/investment banks).
+- **2main** — full-time applications in your main area (default tab). The author calls it "2tech".
+- **3focus** — full-time applications in `[TARGET_INDUSTRIES]` (the author's is "3fin-bank":
+  fintech + banks). Unused if `[TARGET_INDUSTRIES]` is "any".
 - **4startups** — full-time applications at early-stage/small startups. Low focus; only strong fits.
 - **5contractor** — contract/staffing roles (roles via staffing/recruiting firms, or explicitly
   contract). Low focus; only strong fits.
@@ -657,8 +787,8 @@ Tech stack, Confirmation, Rejection email?, Job URL (**URL last**).
 Compensation: the posted range from the posting; blank if the posting states none.
 
 Classification precedence (each application goes in exactly ONE tab): contractor (role is
-contract/staffing) > fin-bank (company sector) > startups (company stage) > tech (default).
-When in doubt, 2tech.
+contract/staffing) > focus industry (company sector) > startups (company stage) > main (default).
+When in doubt, 2main.
 
 ## 10.2 The application log
 
@@ -992,7 +1122,7 @@ Keep a living playbook file with:
 - `files/my-info.md` — your answer file: the single source of truth for application answers.
 - `files/application-answers.md` — drafted short answers / essays + parked questions.
 - `files/ats-playbook.md` — the ATS playbook (13.2).
-- `files/job-application-records.xlsx` — the spreadsheet (JAR): 1summary + 2tech / 3fin-bank /
+- `files/job-application-records.xlsx` — the spreadsheet (JAR): 1summary + 2main / 3focus /
   4startups / 5contractor.
 - `files/blocked-backlog.md` — 1-hour filings + pending verification links.
 - `applications/applications-log.md` — the full application history (applied, skipped, parked,
@@ -1020,9 +1150,9 @@ plain words — each answer becomes a standing rule the first time you give it:
 
 ## 13.5 One-paragraph summary (for anyone skimming)
 
-Apply automatically, as much as fits, to roles you can actually take: mid-level through Senior,
-never Staff or above, never scientist/researcher/MLE/hardware, salary floor set by you, never a
-posting that excludes sponsorship, never a requisition already applied to, never an invented
+Apply automatically, as much as fits, to roles you can actually take: titles from `[TARGET_TITLES]`
+at `[TARGET_LEVELS]`, never a title containing `[SKIP_KEYWORDS]`, salary floor set by you, never a
+posting that excludes sponsorship (if you need it), never a requisition already applied to, never an invented
 answer. Source fresh postings (12 hours primary, 24 hours max), dispatch up to the running-task
 target, close each tab the moment its submission is confirmed and recorded, reconcile the
 application inbox every pass, file anything unreported after 1 hour with its evidence status and

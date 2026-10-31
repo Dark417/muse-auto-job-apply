@@ -4,6 +4,8 @@
 
 Let **Muse** (an AI assistant at https://muse.ai) apply to jobs for you, around the clock.
 
+**It works for any field**, not just software: you tell Muse which job titles, levels and keywords to look for.
+
 You only need to do **3 things**:
 
 1. **Set up Muse** with the instructions file, your information, your resume and cover letter.
@@ -26,13 +28,21 @@ You only need to do **3 things**:
 3. Open the downloaded file:
    - **Windows:** right-click it → **Open with** → **Notepad**.
    - **Mac:** right-click it → **Open With** → **TextEdit**.
-4. At the very top, find the box called **✏️ STEP 1: FILL IN YOUR INFORMATION HERE**.
-   Replace every **`____`** with your own information. Each line has an example. For instance:
-   ```
-   [YOUR_NAME]               = Jane Doe
-   [YOUR_CITY_STATE]         = Seattle, WA
-   ```
-   You only fill in that box. You don't need to change anything else in the file.
+4. At the very top, under **✏️ STEP 1: FILL IN YOUR INFORMATION HERE**, there are two boxes. Replace every **`____`** with your own information:
+   - **Box A: About you.** Name, email, phone, degree, years of experience, visa status, etc.
+   - **Box B: What jobs to apply for.** The job titles you want, backup titles, your level, and **skip words**: any job whose title has one of these words is ignored. For example:
+     ```
+     [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
+     [BACKUP_TITLES]  = Reporting Analyst, Operations Analyst
+     [TARGET_LEVELS]  = junior, mid-level
+     [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
+     ```
+     - Experienced? Skip `principal, staff, director, intern, internship, new grad`.
+     - Student or new grad? Skip `senior, staff, principal, lead, manager`.
+
+     Right below box B there are **ready-made examples** for software engineers, new grads, analysts, marketing, mechanical engineers and interns. Copy the one closest to you and change it.
+
+   You only fill in these two boxes. You don't need to change anything else in the file.
 5. **Save** the file.
 6. Go to **https://muse.ai** and sign in. Start a **new chat**.
 7. Attach **3 files**: the filled-in `muse-prompt.md`, your resume PDF and your cover letter PDF.
@@ -41,6 +51,20 @@ You only need to do **3 things**:
 9. Muse will ask you to **connect your job Gmail** and **save your logins** for job sites. Follow what it says.
 
 > 🔒 Never type a password into the chat. When Muse needs a password, it shows a secure form for it.
+
+### How Muse goes about it
+
+`muse-prompt.md` is the author's own playbook. In short:
+
+- **Fresh jobs first.** It applies within hours of a job being posted, when recruiters are still reading applications.
+- **Lots of applications, but only real fits.** Right title, level, pay and visa situation. No random applying.
+- **Apply on the company's own website.** LinkedIn is only for finding jobs, not for "Easy Apply".
+- **Never lie, never guess.** If it doesn't know an answer, it asks you.
+- **Never apply twice.** Everything goes into one spreadsheet that's checked first.
+- **Don't get stuck.** An application that takes over an hour is set aside, and it moves on.
+- **Reach a human.** It sends a short LinkedIn note to the recruiter when the posting names one.
+
+The full version is in "How this system thinks" near the top of `muse-prompt.md`.
 
 ---
 

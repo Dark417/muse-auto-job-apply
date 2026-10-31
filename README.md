@@ -4,6 +4,8 @@
 
 让 **Muse**（https://muse.ai 上的 AI 助手）24 小时帮你投简历。
 
+**任何专业都能用**，不只是程序员：你告诉 Muse 要找什么职位名称、什么级别、哪些关键词。
+
 你只需要做 **3 件事**：
 
 1. **设置 Muse**：给它说明书文件、你的个人信息、简历和求职信。
@@ -26,13 +28,21 @@
 3. 打开下载好的文件：
    - **Windows：** 右键 → **打开方式** → **记事本**。
    - **Mac：** 右键 → **打开方式** → **文本编辑**。
-4. 在文件最上面找到 **✏️ STEP 1: FILL IN YOUR INFORMATION HERE** 这个框。
-   把每一个 **`____`** 换成你自己的信息。每一行后面都有例子，比如：
-   ```
-   [YOUR_NAME]               = Jane Doe
-   [YOUR_CITY_STATE]         = Seattle, WA
-   ```
-   只需要填这个框，文件里别的地方都不用改。
+4. 在文件最上面的 **✏️ STEP 1: FILL IN YOUR INFORMATION HERE** 下面有两个框。把每一个 **`____`** 换成你自己的信息：
+   - **Box A：关于你。** 姓名、邮箱、电话、学历、工作年限、签证情况等。
+   - **Box B：投什么工作。** 想投的职位名称、备选职位名称、级别，以及**过滤词**：职位名称里带这些词的，一律跳过。比如：
+     ```
+     [TARGET_TITLES]  = Data Analyst, Business Analyst, BI Analyst
+     [BACKUP_TITLES]  = Reporting Analyst, Operations Analyst
+     [TARGET_LEVELS]  = junior, mid-level
+     [SKIP_KEYWORDS]  = senior, staff, principal, manager, intern, internship
+     ```
+     - 有几年经验？过滤掉 `principal, staff, director, intern, internship, new grad`。
+     - 学生或应届生？过滤掉 `senior, staff, principal, lead, manager`。
+
+     Box B 下面有**现成的例子**：程序员、应届生、数据分析、市场营销、机械工程、实习。挑一个最接近你的，复制过来再改。
+
+   只需要填这两个框，文件里别的地方都不用改。
 5. **保存**文件。
 6. 打开 **https://muse.ai** 并登录，开一个**新对话**。
 7. 上传 **3 个文件**：填好的 `muse-prompt.md`、简历 PDF、求职信 PDF。
@@ -41,6 +51,20 @@
 9. Muse 会请你**连接求职 Gmail**、**保存各个招聘网站的登录信息**。按它说的做就行。
 
 > 🔒 不要在聊天里输入密码。需要密码时，Muse 会弹出一个安全的输入框。
+
+### Muse 的投递思路
+
+`muse-prompt.md` 是作者自己用的投递策略。简单说：
+
+- **先投最新的职位。** 职位发布后几小时内就投，这时候招聘的人还在认真看申请。
+- **投得多，但只投真正合适的。** 职位名称、级别、薪资、签证情况都要对得上，不乱投。
+- **在公司官网投递。** LinkedIn 只用来找职位，不用 "Easy Apply"。
+- **不编、不猜。** 不知道怎么回答的问题，会停下来问你。
+- **不重复投。** 所有申请都记在一个表格里，投之前先查。
+- **不卡住。** 一个申请超过 1 小时还没完成，就先放一边，接着投下一个。
+- **主动联系人。** 职位上写了招聘负责人的，会在 LinkedIn 上发一条简短的加好友留言。
+
+完整版在 `muse-prompt.md` 开头的 "How this system thinks" 部分。
 
 ---
 
