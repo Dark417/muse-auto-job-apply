@@ -28,6 +28,9 @@ All the details live in [muse-prompt.md](muse-prompt.md). Here is the general id
 - **Don't get stuck.** An application that takes over an hour is set aside, and it moves on.
 - **Verification challenges mean exit.** If a site puts up a slider, a click challenge, or anything like that, the application ends on the spot: recorded, logged, tab closed. No grinding, no retrying.
 - **A login wall is not a failure.** Creating an account, getting a code, or clicking a verification link are normal steps, not reasons to fail.
+- **Read the visa wording closely.** A posting that won't sponsor first-time work visas is not the same as one that won't sponsor a transfer — if you need a transfer, only the transfer exclusion (or a citizens-only posting) rules you out.
+- **Unfinished applications get finished.** If a company emails that your application is incomplete, the loop reopens it and works it until it's submitted.
+- **One login everywhere.** The same email and password go on every job site; if sign-in says the password is wrong, the account already exists under a different password — reset it to your usual password and carry on.
 - **Reach a human.** It sends a short LinkedIn note to the recruiter when the posting names one.
 
 The full version is in "How this system thinks" near the top of `muse-prompt.md`.

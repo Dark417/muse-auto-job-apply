@@ -305,8 +305,11 @@ All four tracks share **one ranked queue** (not separate queues that can duplica
 4. **Compensation:** posted salary (or top of the posted range) ≥ `[YOUR_COMP_FLOOR]`. Use
    `[YOUR_COMP_FALLBACK]` only when good roles run dry. No salary posted, or floor = "any" →
    proceed on fit.
-5. **Sponsorship (only if `[YOUR_NEEDS_SPONSORSHIP]` = yes):** the posting must not exclude sponsorship. Explicit "no sponsorship", "no H-1B",
-   "US citizens only", or "must be authorized without sponsorship" = skip.
+5. **Sponsorship (only if `[YOUR_NEEDS_SPONSORSHIP]` = yes):** read the job description page itself (not an aggregator snippet) for sponsorship wording, and distinguish HOW it excludes:
+   - General exclusion — "no sponsorship", "no H-1B", "must be authorized without sponsorship", or "only Green Card holders / US citizens" = skip.
+   - "Does not sponsor first-time / new H-1B petitions" ONLY, with transfers not excluded (or transfers explicitly allowed) = do NOT skip on that wording alone: if you need an H-1B *transfer*, not a first-time petition, this wording does not exclude you. Proceed on fit and note the wording in the row.
+   - "Does not sponsor H-1B transfers" (transfer sponsorship excluded) = skip.
+   - Ambiguous general wording ("sponsorship not available" with no first-time/transfer distinction) = treat as a general exclusion = skip. Never guess that transfer is allowed when the page does not say so.
 6. **Location:** matches `[TARGET_LOCATIONS]`. (Author's example: anywhere in the US, ~70%
    California/Seattle, ~25% TX/NY/NJ/AZ, ~5% elsewhere.)
 7. **Level mix (soft):** mostly the main level in `[TARGET_LEVELS]`; when those run out, use the
@@ -576,6 +579,7 @@ and the assistant only ever learns whether a sign-in worked.
   Otherwise sign in with email, never a mobile-number tab: try creating the account first with
   your application email and your usual password; if the email already exists, use the
   reset-password flow (Part 6.7) and continue. Never invent a password.
+- **Sign-in failures are create-or-reset, never a stop.** If sign-in says the password is invalid or wrong, the account EXISTS under a different password — go through the reset-password flow, take the reset link from the application inbox, reset to your one account password, then sign in and finish the application. There is no invalid-email branch: your application email is never wrong, so a failure is never a reason to stop or to park on a sign-in wall. If a site hands you a temporary password, use it, and reset to your one password if the site allows; otherwise just use the temporary one and keep going.
 
 ## 6.2 How to add a website login (the secure entry flow)
 
@@ -687,7 +691,7 @@ and the assistant only ever learns whether a sign-in worked.
   concluding a login doesn't exist.
 - If a site rejects a saved login, report that result and offer a replacement login or a reset —
   do not silently retry the same credential, and do not start a password reset without your
-  explicit request or approval.
+  explicit request or approval. Exception: a reset triggered by the sign-in flow itself (password-invalid on sign-in, or email-exists on create) is part of applying and proceeds under your standing setup — it does not need a separate approval each time. Any other reset still needs your explicit request or approval.
 
 ## 6.9 Credential setup checklist (do this before the first pass)
 
@@ -768,6 +772,12 @@ flag anything needing your own response in the next report.
 - Codes: typed in by a window, read from the inbox (Part 6.6).
 - Links: tapped by you or your auto-click, tracked in PENDING (Part 6.7).
 - Counted per gate attempt (codes) and per pending company (links) — separately, never merged.
+
+## 8.4 Incomplete-application revival
+
+- Every pass also watches the application inbox for emails saying an application is incomplete (or asking you to finish it). Each such item is reopened and worked until it is submitted and logged — it is not left parked.
+- Hard exclusions still stand: an incomplete item on your do-not-apply list (or otherwise excluded) is logged as skipped, not finished.
+- A reminder email alone, with the role unreadable or unidentified, is not a revival: read it again before acting, and never guess the role.
 
 ---
 
@@ -1029,7 +1039,7 @@ A removal missing all four is flagged "evidence missing" and surfaced in the nex
 
 ## 12.1 Cadence
 
-- **Applies run every 5 minutes** on all three tracks. **Reports are batched every 2 hours**,
+- **Applies run every 5 minutes** on all tracks. **Reports are batched every 2 hours**,
   plus on demand at any time, plus a full comprehensive report at 10 PM daily. Batching reports
   does not slow applying; passes still dispatch, submit, and reconcile every 5 minutes.
 - Routine pass handoffs with no new outcome are suppressed. Short decision-delta messages are
@@ -1057,8 +1067,8 @@ Counts first, aggregated across tracks (never per-track), in one very small tabl
   Email rejections and LinkedIn messages are still recorded in the spreadsheet and log; they are
   simply not reported here. Upload cards are solved (Part 5.3) — do not report them here again,
   not even as a count.
-- Main-chat daily reports (7 AM / 10 PM) keep a different shape: OA / interviews / job apps /
-  LinkedIn messages / email rejections, cumulative, plus the 10 PM additions below.
+- The same removal applies to every other report, including daily reports: no LinkedIn messages count, no email rejections count, anywhere. Email rejections and LinkedIn messages are still recorded in the spreadsheet and log; they are simply never reported.
+- The count summary table at the beginning of EVERY report carries, for successes and separately for failures: job-title distribution and template distribution. Failure distributions are derived from the unsuccessful set; items with no specific role or no URL go in an Unknown bucket, stated as such.
 
 ## 12.3 Report sections (on demand or batched)
 
@@ -1131,6 +1141,12 @@ Counts first, aggregated across tracks (never per-track), in one very small tabl
 - Counts/metrics in the job-application chat: job apps / OA / interviews ONLY — no email
   rejections, no LinkedIn messages, no upload cards (not even counts).
 
+## 12.7 On-demand report shape: simple by default, full only on an exact request
+
+- When you ask for a report WITHOUT saying "full report" (including "report" and "report for today"): give a SIMPLE report in chat only — the count summary table above plus up to 10 latest failure root-cause analyses (latest first; each: company + role, reason, root cause, and what unblocks it if anything). Do NOT attach or create a full-report file.
+- Give the FULL report (counts, task stats, title stats, template stats, login-wall stats, successful full table, unsuccessful full table) as a file ONLY when you ask exactly for "full report".
+- Counts in every report: online assessments, interviews, and job applications ONLY. This simple/full distinction governs on-demand asks; the scheduled 10 PM full report (12.5) keeps its own shape.
+
 ---
 
 # Part 13 — The pass workflow and file layout
@@ -1150,6 +1166,7 @@ Counts first, aggregated across tracks (never per-track), in one very small tabl
    from merged results.
 7. **File 1-hour items** with P/N class + evidence status (Parts 10.6, 11.2, 11.3); flag
    evidence-missing and pre-close violations in the next report.
+8. **Answer-packet quality check.** For applications filled from your pre-written answer packet (any form type except Workday-style forms): record every question + the exact answer used; after the pass, judge each against the correct answer and report total / correct / accuracy. A mid-run fill failure re-runs at least twice per attempt — never park or fail on the first failure.
 
 ## 13.2 ATS playbook
 
