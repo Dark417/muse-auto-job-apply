@@ -160,10 +160,13 @@ The short version, so you know why the rules below look the way they do:
 7. **Reach a human too.** When a posting names a recruiter or hiring manager, Muse sends them a
    short LinkedIn connection note.
 8. **Automate the boring parts.** Verification codes are read from your inbox and entered promptly;
-   verification links are waited on, or tapped by you when only you can open them (see Part 6),
-   so the whole thing runs while you sleep.
+   verification links are clicked once an hour by a scheduled job — having Muse click them the
+   moment they arrive is not set up yet (see Part 6) — so the whole thing runs while you sleep.
 9. **Keep score.** Muse reports what it applied to, what got confirmed, and what's stuck, so you
    always know where things stand.
+10. **Work by category.** Direct company-site sourcing is organized by category — for example:
+    big companies, fintech, quant, and banks — alongside LinkedIn sourcing. Applying always
+    happens on the company's own site, never on LinkedIn.
 
 ## How to use this document
 
@@ -533,6 +536,9 @@ opposite things, and getting them confused has caused real errors:
   cannot tap a runtime approval card, so you need a clearing mechanism: in the original setup, a
   computer kept on around the clock runs automation that clears approval cards continuously
   (~3–4 minutes). A tab stuck on an upload approval therefore waits only minutes, day or night.
+- **Concrete setup: the Chrome plugin.** Install the Chrome plugin from this repo
+  (`muse-auto-allow-chrome/`) and keep the computer on — it clicks **Allow once** / **Allow**
+  on upload approvals automatically, so a tab stuck on an upload approval waits only minutes.
 - While a tab waits on approval: keep applying in NEW tabs so actively-applying threads never drop
   below the track minimum. Stuck tabs do not count toward the minimum, and total open tabs may
   grow past it. Submissions are UNLIMITED — never slow down or cap submissions to manage the

@@ -2,14 +2,15 @@
 
 # Muse Auto Job Apply
 
-Let **Muse** (an AI assistant at https://muse.ai) apply to jobs for you, around the clock.
+Let **Muse** (an AI assistant at https://muse.ai) apply to jobs for you automatically, around the clock, based on the requirements you set.
 
 **It works for any field**, not just software: you tell Muse which job titles, levels and keywords to look for — and which keywords to filter out.
 
-**You only need to do 2 things:**
+**What this does, in the simplest terms:**
 
-1. **Set Muse up once**: fill in the instructions file and upload your resume.
-2. **Leave it running**, and handle only the few things only you can do (clicking verification links, making calls Muse isn't sure about).
+1. **Set Muse up once**: fill in the instructions file and upload your resume. After that, Muse finds jobs and applies automatically, per your requirements.
+2. **Install the Chrome plugin and keep the computer on**: the plugin auto-clicks the upload permission (Allow once / Allow) when a resume is uploaded, so uploads never stall waiting on you.
+3. **Verification links get clicked once an hour**: emails from job sites asking you to "click to verify your account" are opened by a scheduled job that runs every hour. Having Muse click them the moment they arrive is not set up yet.
 
 ---
 
@@ -20,6 +21,8 @@ All the details live in [muse-prompt.md](muse-prompt.md). Here is the general id
 - **Fresh jobs first.** LinkedIn jobs are worked in a ladder — 12, then 24, then 36, then 48 hours, with 48 hours as the hard limit. Company-site jobs have no date gate and are worked newest first.
 - **Lots of applications, but only real fits.** Right title, level, pay and visa situation. No random applying.
 - **Apply on the company's own website.** LinkedIn is only for finding jobs, not for "Easy Apply".
+- **Work by category, straight on company sites.** Jobs come not just from LinkedIn, but directly from company career sites, organized by category: big companies, fintech, quant, and banks.
+- **Uploads don't need you watching.** The Chrome plugin plus a computer that's always on auto-clicks the upload permission, so a stuck upload only waits minutes.
 - **Never lie, never guess.** If it doesn't know an answer, it asks you.
 - **Never apply twice.** Everything goes into one spreadsheet that's checked first, and one job (company + role + requisition ID) never gets two applications.
 - **Don't get stuck.** An application that takes over an hour is set aside, and it moves on.
@@ -83,7 +86,12 @@ The full version is in "How this system thinks" near the top of `muse-prompt.md`
 
 > 🔒 Never type a password into the chat. When Muse needs a password, it shows a secure form for it.
 
-**Step 4: Leave it running**
+**Step 4: Install the Chrome plugin and keep the computer on**
+
+- Install the Chrome plugin from this repo (`muse-auto-allow-chrome/`).
+- Keep the computer on. The plugin auto-clicks **Allow once** / **Allow** when a resume is uploaded, so you don't have to sit and click.
+
+**Step 5: Leave it running**
 
 - Muse keeps finding jobs and applying on a short cycle. You don't need to watch it.
 - Only a few things need you: clicking verification links, making calls Muse isn't sure about, answering its questions. The rest runs itself.
@@ -134,34 +142,4 @@ Some sites text you a code. Muse can only read email, so your iPhone can forward
    - Tap the arrow on the action and turn **off** **Show Compose Sheet**.
 4. Repeat for other words, like `verification` or `passcode`.
 5. Test: have a site text you a code and check that the email arrives.
-</details>
-
-<details>
-<summary><b>What's in this repo</b></summary>
-
-| File | What it is |
-|---|---|
-| [muse-prompt.md](muse-prompt.md) | Instructions for Muse: how to find jobs, apply, read codes from email, and keep records. All the details live here. |
-| [claude-job-email-verifier.md](claude-job-email-verifier.md) | Instructions for the optional Claude task that opens verification links. |
-
-```mermaid
-flowchart LR
-    subgraph MAC["Your computer · always on"]
-        direction TB
-        Muse["<b>Muse</b><br/>sources &amp; applies"]
-        Claude["<b>Claude</b><br/>hourly task (optional)"]
-    end
-
-    Jobs["<b>Job sites</b><br/>LinkedIn · Greenhouse<br/>Workday · …"]
-    Phone["<b>iPhone</b><br/>Shortcuts (optional)"]
-    Gmail[("<b>Job-application<br/>Gmail</b>")]
-
-    Muse -- "applies" --> Jobs
-    Muse -- "reads codes &amp;<br/>confirmations" --> Gmail
-    Claude -- "reads verify links" --> Gmail
-    Claude -- "opens each link once" --> Jobs
-    Jobs -- "emails" --> Gmail
-    Jobs -- "SMS codes" --> Phone
-    Phone -- "forwards SMS" --> Gmail
-```
 </details>
