@@ -70,6 +70,7 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也一样能用。
 | `manifest.json` | 扩展的配置。只请求访问 `https://muse.ai/*`。 |
 | `background.js` | 定时器和点击逻辑。 |
 | `popup.html`、`popup.js` | 开关、Run now 按钮和日志。 |
+| `CHANGELOG.md` | 版本更新记录（按时间倒序）。 |
 
 ---
 
@@ -145,3 +146,4 @@ Edit `background.js`, then reload the extension at `chrome://extensions`:
 | `manifest.json` | Extension settings. Only asks for access to `https://muse.ai/*`. |
 | `background.js` | The timer and the clicking. |
 | `popup.html`, `popup.js` | The on/off switch, Run now button and log. |
+| `CHANGELOG.md` | Version history, newest first. |
