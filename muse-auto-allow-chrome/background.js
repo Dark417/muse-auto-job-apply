@@ -1,8 +1,9 @@
 // Every INTERVAL minutes, allows every pending approval in open muse.ai tabs
 // ("always allow for this website" when the card offers it).
 
-const INTERVAL_MIN = 2;
-const CLICK_DELAY_MS = 2000;
+const INTERVAL_MIN = 0.5;
+const CLICK_DELAY_MIN_MS = 500;
+const CLICK_DELAY_MAX_MS = 1000;
 const MAX_CLICKS_PER_PASS = 30;
 const MUSE_URLS = ["https://muse.ai/*"];
 const LOG_LIMIT = 200;
@@ -37,7 +38,7 @@ async function pass() {
       const [res] = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: clickAllowButtons,
-        args: [CLICK_DELAY_MS, MAX_CLICKS_PER_PASS],
+        args: [CLICK_DELAY_MIN_MS, CLICK_DELAY_MAX_MS, MAX_CLICKS_PER_PASS],
       });
       const { pressed = [], diag } = res.result || {};
       for (const title of pressed) await log(`Allow pressed: ${title}`);
@@ -57,8 +58,9 @@ async function log(line) {
 }
 
 // Runs inside the muse.ai page. Must be self-contained (no outer variables).
-async function clickAllowButtons(delayMs, maxClicks) {
+async function clickAllowButtons(delayMinMs, delayMaxMs, maxClicks) {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const randomDelay = () => delayMinMs + Math.random() * (delayMaxMs - delayMinMs);
   const text = (el) => (el.innerText || el.textContent || "").trim();
   // Site-access cards say "Allow"; upload cards in the web app say "Allow once",
   // which always comes with a dropdown holding "Always allow" (used instead).
@@ -160,7 +162,7 @@ async function clickAllowButtons(delayMs, maxClicks) {
     }
     pressed.push(`${next.title} [${how}]`);
     last = next.btn;
-    await sleep(delayMs);
+    await sleep(randomDelay());
   }
   const diag = `tab ${document.visibilityState}, sections ${scopes().length}, ` +
     `Allow buttons on page ${allowButtons(document).length}`;

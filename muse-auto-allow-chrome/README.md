@@ -4,7 +4,7 @@
 
 一个 Chrome 扩展。Muse 网页版（muse.ai）请求批准时（比如上传简历），它会自动帮你批准。不用编译，也不用给系统权限。
 
-- 每 **2 分钟**检查一次打开着的 muse.ai 标签页，把所有待批准的请求都批准掉，每次间隔 2 秒。
+- 每 **30 秒**检查一次打开着的 muse.ai 标签页，把所有待批准的请求都批准掉，每次点击之间随机间隔 0.5–1 秒。
 - 蓝色按钮写 **"Allow"**：直接点。
 - 蓝色按钮写 **"Allow once"**：说明旁边有下拉菜单。它会打开下拉菜单，点 **"Always allow"**（永远允许），不点 "Allow once"。这样同一个网站以后就不再问。万一找不到 "Always allow"，才退回去点 "Allow once"，免得 Muse 卡住。
 - 只点 "Needs review" 列表里的按钮，页面上别的 "Allow" 不会碰。
@@ -60,7 +60,7 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也一样能用。
 ## 自定义
 
 改 `background.js`，然后在 `chrome://extensions` 里刷新扩展：
-- 开头的 `INTERVAL_MIN`（检查间隔，分钟）、`CLICK_DELAY_MS`（每次点击间隔）、`MAX_CLICKS_PER_PASS`（每次最多点几个）。Chrome 最快 30 秒检查一次。
+- 开头的 `INTERVAL_MIN`（检查间隔，分钟）、`CLICK_DELAY_MIN_MS` / `CLICK_DELAY_MAX_MS`（每次点击之间的随机间隔范围）、`MAX_CLICKS_PER_PASS`（每次最多点几个）。Chrome 最快 30 秒检查一次。
 - 只批准上传：在 `findNext()` 里把 `if (title)` 改成 `if (title && /upload/i.test(title))`。排在最上面的非上传请求会停在那里等你处理。
 
 ## 文件
@@ -79,7 +79,7 @@ Edge、Brave、Arc 等基于 Chromium 的浏览器也一样能用。
 
 A Chrome extension that approves Muse's requests on muse.ai (for example, uploading your resume) for you. Nothing to build, and no system permissions.
 
-- Every **2 minutes** it checks your open muse.ai tabs and approves every waiting request, 2 seconds apart.
+- Every **30 seconds** it checks your open muse.ai tabs and approves every waiting request, 0.5–1 second apart (randomized).
 - Blue button says **"Allow"**: it clicks it.
 - Blue button says **"Allow once"**: that means there's a dropdown next to it. It opens the dropdown and clicks **"Always allow"** instead of "Allow once", so that site doesn't ask again. Only if "Always allow" can't be found does it click "Allow once", so Muse doesn't get stuck.
 - It only clicks buttons in the "Needs review" list. Other "Allow" buttons on the page are left alone.
@@ -135,7 +135,7 @@ The number on the toolbar icon is how many requests it approved in the last chec
 ## Customize
 
 Edit `background.js`, then reload the extension at `chrome://extensions`:
-- `INTERVAL_MIN` (minutes between checks), `CLICK_DELAY_MS` (time between clicks) and `MAX_CLICKS_PER_PASS` (most clicks per check) are at the top. Chrome won't check more often than every 30 seconds.
+- `INTERVAL_MIN` (minutes between checks), `CLICK_DELAY_MIN_MS` / `CLICK_DELAY_MAX_MS` (random delay range between clicks) and `MAX_CLICKS_PER_PASS` (most clicks per check) are at the top. Chrome won't check more often than every 30 seconds.
 - To approve only uploads: in `findNext()`, change `if (title)` to `if (title && /upload/i.test(title))`. A non-upload request at the top then waits for you.
 
 ## Files
